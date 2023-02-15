@@ -17,8 +17,8 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
-app.use(`/auth`, AuthRouter);
-app.use(`/projects`, ProjectRouter);
+app.use(`/projectmania/auth`, AuthRouter);
+app.use(`/projectmania/projects`, ProjectRouter);
 
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}...`));
