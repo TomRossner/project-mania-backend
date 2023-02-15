@@ -1,0 +1,50 @@
+@local = http://localhost:3001
+
+###
+
+GET {{local}}/projects/all
+Content-Type: application/json
+
+###
+
+POST {{local}}/tasks
+Content-Type: application/json
+
+{
+    "id": "63e253754d4a5c7876d80922",
+    "task_id": "63e26d8ed70d8f4ff277d1a2"
+}
+
+###
+
+PUT {{local}}/projects/update
+Content-Type: application/json
+
+{
+    "created_at": "",
+    "due_date": "",
+    "edit_active": false,
+    "members": [],
+    "options_menu_open": false,
+    "stages": [],
+    "subtitle": "",
+    "title": "",
+    "_id": ""
+}
+
+###
+
+GET {{local}}/auth/users
+Content-Type: application/json
+
+###
+
+POST {{local}}/auth/register
+Content-Type: application/json
+
+{
+    "first_name": "tom",
+    "last_name": "rosssssner",
+    "email": "tomrossner2@gmail.com",
+    "password": "tom123"
+}
