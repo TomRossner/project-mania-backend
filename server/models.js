@@ -1,6 +1,8 @@
 
 const mongoose = require("mongoose");
 const {defaultStages} = require("./defaultProperties");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const messageSchema = new mongoose.Schema({
     text: {type: String},
@@ -23,7 +25,8 @@ const taskSchema = new mongoose.Schema({
     edit_active: {type: Boolean, default: false},
     files: {type: Array},
     messages: {type: [messageSchema]},
-    priority: {type: String, default: 'Low'}
+    priority: {type: String, default: 'Low'},
+    description: {type: String}
 })
 const Task = mongoose.model("Task", taskSchema);
 
@@ -67,6 +70,13 @@ const userSchema = new mongoose.Schema({
     notifications: {type: Array},
     is_admin: {type: Boolean, default: false}
 }, {collection: 'users'})
+
+userSchema.methods.generateAuthToken = function() {
+    const token = jwt.sign({_id: this._id, email: this.email}, process.env.JWT_SECRET);
+    console.log(token)
+    return token;
+}
+
 const User = mongoose.model("User", userSchema);
 
 

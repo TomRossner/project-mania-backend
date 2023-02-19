@@ -1,4 +1,4 @@
-@local = http://localhost:3001
+@local = http://localhost:5000
 
 ###
 
@@ -7,13 +7,8 @@ Content-Type: application/json
 
 ###
 
-POST {{local}}/tasks
+GET {{local}}/projectmania/projects/63ed61b443aa8b665ba8f7cc/63ee65c7384c7bded2c77595
 Content-Type: application/json
-
-{
-    "id": "63e253754d4a5c7876d80922",
-    "task_id": "63e26d8ed70d8f4ff277d1a2"
-}
 
 ###
 
@@ -34,17 +29,23 @@ Content-Type: application/json
 
 ###
 
-GET {{local}}/auth/users
-Content-Type: application/json
-
-###
-
-POST {{local}}/auth/register
+POST {{local}}/projectmania/auth/login
 Content-Type: application/json
 
 {
-    "first_name": "tom",
+    "email": "test@gmail.com",
+    "password": "test123"
+}
+
+###
+
+POST {{local}}/projectmania/auth/register
+Content-Type: application/json
+
+{
+    "first_name": "tomross",
     "last_name": "rosssssner",
-    "email": "tomrossner2@gmail.com",
-    "password": "tom123"
+    "email": "tomross@gmail.com",
+    "password": "tom123",
+    "is_admin": true
 }

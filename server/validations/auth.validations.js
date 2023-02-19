@@ -5,7 +5,8 @@ function validateRegistrationInputs(user) {
         first_name: Joi.string().min(2).max(255).required(),
         last_name: Joi.string().min(2).max(255).required(),
         email: Joi.string().min(6).max(255).email().required(),
-        password: Joi.string().min(6).max(1024).required()
+        password: Joi.string().min(6).max(1024).required(),
+        is_admin: Joi.bool()
     });
 
     return schema.validate(user);
