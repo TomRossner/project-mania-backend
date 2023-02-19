@@ -1,13 +1,16 @@
 @local = http://localhost:5000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YwZmQ4YTU1ZTQ3ZjkzODU5MmNjZjEiLCJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwiaWF0IjoxNjc2NzkzODEzfQ.yk_X9KXc4H8hNkU3mraqhZShqjCUZwgYDTCQpaUgIQk
 
 ###
 
-GET {{local}}/projects/all
+GET {{local}}/projectmania/auth/get/63f0fd8a55e47f938592ccf1
 Content-Type: application/json
+x-auth-token: {{token}}
 
 ###
 
 GET {{local}}/projectmania/projects/63ed61b443aa8b665ba8f7cc/63ee65c7384c7bded2c77595
+x-auth-token: {{token}}
 Content-Type: application/json
 
 ###

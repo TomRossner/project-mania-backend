@@ -58,8 +58,22 @@ async function login(req, res) {
     }
 }
 
+async function getUserInfo(req, res) {
+    try {
+        const {id} = req.params;
+        const user = await User.findById(id).select({_id: 0, password: 0});
+        
+        if (!user) return res.status(400).send({error: "User not found"});
+
+        return res.status(200).send(user);
+    } catch (error) {
+        res.status(400).send({error: "Failed getting user"});
+    }
+}
+
 module.exports = {
     getUsers,
     register,
-    login
+    login,
+    getUserInfo
 }
