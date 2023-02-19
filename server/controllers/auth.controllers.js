@@ -50,14 +50,9 @@ async function login(req, res) {
         const isMatchingPassword = await bcrypt.compare(password, user.password);
 
         if (!isMatchingPassword) return res.status(400).send({error: "Incorrect email or password"});
-        else if (isMatchingPassword) return res.status(200).send({
-            first_name: user.first_name,
-            last_name: user.last_name,
-            email,
-            is_admin: user.is_admin,
-            last_login: Date.now(),
-            notifications: user.notifications
-        });
+        
+        const token = user.generateAuthToken();
+        return res.status(200).send({token});
     } catch (error) {
         res.status(400).send({error: "Login failed"});
     }
