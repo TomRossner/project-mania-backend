@@ -34,11 +34,12 @@ async function getTask(req, res) {
     try {
         const {id: projectID, task_id} = req.params;
         const project = await Board.findOne({_id: projectID});
-        const tasks = project.stages.map(stage => {
-            return stage.stage_tasks.find(task => task._id === task_id);
+        const stageContainingTask = project.stages.filter(stage => {
+            return stage.stage_tasks.find(task => task._id.toString() === task_id.toString());
         })
-        const taskToReturn = tasks.filter(task => task !== undefined);
-        res.status(200).send(taskToReturn);
+        if (!stageContainingTask || stageContainingTask === undefined) {
+            res.status(404).send({error: "Task not found"});
+        } else return res.status(200).send(stageContainingTask[0].stage_tasks[0]);
     } catch (error) {
         res.status(400).send({error: "Task not found"});
     }
