@@ -1,11 +1,12 @@
 const {Board} = require("../models");
-const {ObjectId} = require("mongodb");
 
 async function getProjects(req, res) {
     try {
+        const {id} = req.params;
         const projects = await Board.find({});
-        if (!projects.length) return res.status(404).send({error: "No projects found"});
-        res.status(200).send(projects);
+        const userProjects = projects.filter(project => project.members.find(member => member._id === id));
+        if (!userProjects.length) return res.status(404).send({error: "No projects found"});
+        res.status(200).send(userProjects);
     } catch (error) {
         res.status(400).send({error: "Failed to get projects"});
     }

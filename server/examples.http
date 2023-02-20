@@ -52,3 +52,9 @@ Content-Type: application/json
     "password": "tom123",
     "is_admin": true
 }
+
+###
+
+GET {{local}}/projectmania/projects/63f0fd8a55e47f938592ccf1/all
+Content-Type: application/json
+x-auth-token: {{token}}
