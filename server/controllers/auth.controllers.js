@@ -61,7 +61,7 @@ async function login(req, res) {
 async function getUserInfo(req, res) {
     try {
         const {id} = req.params;
-        const user = await User.findById(id).select({password: 0});
+        const user = await User.findById(id).select({password: 0, __v: 0});
         
         if (!user) return res.status(400).send({error: "User not found"});
 
