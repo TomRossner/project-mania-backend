@@ -25,14 +25,20 @@ const boardProperties = {
 const defaultTaskProperties = {
     created_at: new Date(),
     current_stage: "",
-    project: "",
+    current_stage_id: "",
+    project_id: "",
     title: "New Task",
     due_date: new Date().toDateString(),
     isDone: false,
     edit_active: false,
     files: [],
     description: "",
-    priority: "Low"
+    priority: {
+        name: "Low",
+        color_class: "yellow",
+        id: "priority_low"
+    },
+    labels: []
 }
 
 module.exports = {

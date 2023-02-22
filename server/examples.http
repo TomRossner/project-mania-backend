@@ -15,8 +15,9 @@ Content-Type: application/json
 
 ###
 
-PUT {{local}}/projects/update
+PUT {{local}}/projectmania/projects/63f62c3c28538648fac0e2d5
 Content-Type: application/json
+x-auth-token: {{token}}
 
 {
     "created_at": "",

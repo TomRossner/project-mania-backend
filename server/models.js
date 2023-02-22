@@ -18,15 +18,17 @@ const Message = mongoose.model("Message", messageSchema);
 const taskSchema = new mongoose.Schema({
     created_at: {type: Date, default: new Date()},
     current_stage: {type: String},
-    project: {type: String},
+    current_stage_id: {type: String},
+    project_id: {type: String},
     title: {type: String, default: "New Task"},
     due_date: {type: Date, default: new Date().toDateString()},
     isDone: {type: Boolean, default: false},
     edit_active: {type: Boolean, default: false},
     files: {type: Array},
     messages: {type: [messageSchema]},
-    priority: {type: String, default: 'Low'},
-    description: {type: String}
+    priority: {type: Object},
+    description: {type: String},
+    labels: {type: Array}
 })
 const Task = mongoose.model("Task", taskSchema);
 
