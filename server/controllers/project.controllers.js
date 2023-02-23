@@ -40,7 +40,7 @@ async function getTask(req, res) {
         })
         if (!stageContainingTask || stageContainingTask === undefined) {
             res.status(404).send({error: "Task not found"});
-        } else return res.status(200).send(stageContainingTask[0].stage_tasks[0]);
+        } else return res.status(200).send(stageContainingTask[0].stage_tasks.filter(task => task._id.toString() === task_id));
     } catch (error) {
         res.status(400).send({error: "Task not found"});
     }
