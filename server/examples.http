@@ -59,3 +59,9 @@ Content-Type: application/json
 GET {{local}}/projectmania/projects/63f0fd8a55e47f938592ccf1/all
 Content-Type: application/json
 x-auth-token: {{token}}
+
+###
+
+DELETE {{local}}/projectmania/projects/63f62c3c28538648fac0e2d5/63f63f3161480aa8d9f0fd0f
+Content-Type: application/json
+x-auth-token: {{token}}
