@@ -9,7 +9,7 @@ x-auth-token: {{token}}
 
 ###
 
-GET {{local}}/projectmania/projects/63ed61b443aa8b665ba8f7cc/63ee65c7384c7bded2c77595
+GET {{local}}/projectmania/projects/63f62c3c28538648fac0e2d5/63f63f3161480aa8d9f0fd0f
 x-auth-token: {{token}}
 Content-Type: application/json
 
