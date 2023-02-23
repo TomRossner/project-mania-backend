@@ -49,8 +49,11 @@ async function getTask(req, res) {
 async function deleteTask(req, res) {
     try {
         const {id: projectID, stage_id, task_id} = req.params;
-        const project = await Board.findOne({_id: projectID});
-        res.status(200).send();
+        await Board.updateOne(
+            {_id: projectID, 'stages._id': stage_id},
+            {$pull: {'stages.$.stage_tasks': {_id: task_id}}}
+        );
+        res.status(200).send("Successfully deleted task");
     } catch (error) {
         res.status(400).send({error: "Failed deleting task"});
     }

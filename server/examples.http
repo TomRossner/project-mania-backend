@@ -62,6 +62,6 @@ x-auth-token: {{token}}
 
 ###
 
-DELETE {{local}}/projectmania/projects/63f62c3c28538648fac0e2d5/63f63f3161480aa8d9f0fd0f
+DELETE {{local}}/projectmania/projects/63f7970f3f833446bf4e25c0/63f7970f3f833446bf4e25c1/63f79af2a47407e7d7b67aa9
 Content-Type: application/json
 x-auth-token: {{token}}
