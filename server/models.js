@@ -17,9 +17,8 @@ const Message = mongoose.model("Message", messageSchema);
 
 const taskSchema = new mongoose.Schema({
     created_at: {type: Date, default: new Date()},
-    current_stage: {type: String},
-    current_stage_id: {type: String},
-    project_id: {type: String},
+    current_stage: {type: Object},
+    project: {type: Object},
     title: {type: String, default: "New Task"},
     due_date: {type: Date, default: new Date().toDateString()},
     isDone: {type: Boolean, default: false},
