@@ -67,7 +67,7 @@ const userSchema = new mongoose.Schema({
     email: {type: String, unique: true, required: true},
     password: {type: String, required: true},
     created_at: {type: Date, default: new Date()},
-    last_login: {type: Date, default: Date.now()},
+    last_login: {type: Date, default: Date.now},
     notifications: {type: Array},
     is_admin: {type: Boolean, default: false}
 }, {collection: 'users'})
