@@ -27,7 +27,8 @@ const taskSchema = new mongoose.Schema({
     messages: {type: [messageSchema]},
     priority: {type: Object},
     description: {type: String},
-    labels: {type: Array}
+    labels: {type: Array},
+    subtitle: {type: String}
 })
 const Task = mongoose.model("Task", taskSchema);
 
