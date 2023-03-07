@@ -1,19 +1,13 @@
 const {User} = require("../models");
 const {validateRegistrationInputs, validateLoginInputs} = require("../validations/auth.validations");
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const admin = require('firebase-admin');
-
 const serviceAccount = require("../../projectmania-e73ae-firebase-adminsdk-hcn09-4c2d89f6b3.json");
+const {generateObjectId, hash, generatePassword, comparePasswords} = require("../utils/utils");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
-
-const hash = async (password) => {
-    const hashedPW = await bcrypt.hash(password, 10);
-    return hashedPW;
-} 
 
 async function getUsers(req, res) {
     try {
@@ -24,7 +18,7 @@ async function getUsers(req, res) {
     }
 }
 
-async function register(req, res) {
+async function signUp(req, res) {
     try {
         const newUser = req.body; 
         const {error} = validateRegistrationInputs(newUser);
@@ -46,7 +40,7 @@ async function register(req, res) {
     }
 }
 
-async function login(req, res) {
+async function signIn(req, res) {
     try {
         const {email, password} = req.body;
         const {error} = validateLoginInputs(req.body);
@@ -55,7 +49,7 @@ async function login(req, res) {
         const user = await User.findOne({email: email});
         if (!user) return res.status(404).send({error: "User not found"});
 
-        const isMatchingPassword = await bcrypt.compare(password, user.password);
+        const isMatchingPassword = await comparePasswords(password, user.password);
 
         if (!isMatchingPassword) return res.status(400).send({error: "Incorrect email or password"});
         
@@ -83,19 +77,47 @@ async function googleSignIn(req, res) {
     try {
         const {googleToken} = req.body;
         const decodedToken = await admin.auth().verifyIdToken(googleToken);
-        const {uid: _id, email} = decodedToken;
+        const {email} = decodedToken;
+
+        const isUserRegistered = await User.findOne({email: email});
+        if (!isUserRegistered) return res.status(400).send({error: "User not registered"});
+
+        const {_id} = await User.findOne({email:email}).select({_id: 1});
         const token = jwt.sign({_id, email}, process.env.JWT_SECRET);
         return res.status(200).send({token});
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(400).send({error: "Failed signing in with Google"});
+    }
+}
+
+async function googleSignUp(req, res) {
+    try {
+        const {displayName, email} = req.body;
+
+        const isUserAlreadyRegistered = await User.findOne({email: email});
+        if (isUserAlreadyRegistered) return res.status(400).send({error: "User already registered"});
+
+        const _id = generateObjectId(req.body.uid);
+        const password = generatePassword(); // Generate random password;
+        const first_name = displayName.split(" ")[0];
+        const last_name = displayName.split(" ")[1];
+
+        const newUser = {_id, first_name, last_name, email, password};
+
+        const user = await new User(newUser).save();
+        return res.status(200).send(user);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({error: "Failed signing up with Google"});
     }
 }
 
 module.exports = {
     getUsers,
-    register,
-    login,
+    signUp,
+    signIn,
     getUserInfo,
-    googleSignIn
+    googleSignIn,
+    googleSignUp
 }
