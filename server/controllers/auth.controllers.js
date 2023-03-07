@@ -1,6 +1,14 @@
 const {User} = require("../models");
 const {validateRegistrationInputs, validateLoginInputs} = require("../validations/auth.validations");
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const admin = require('firebase-admin');
+
+const serviceAccount = require("../../projectmania-e73ae-firebase-adminsdk-hcn09-4c2d89f6b3.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 const hash = async (password) => {
     const hashedPW = await bcrypt.hash(password, 10);
@@ -71,9 +79,23 @@ async function getUserInfo(req, res) {
     }
 }
 
+async function googleSignIn(req, res) {
+    try {
+        const {googleToken} = req.body;
+        const decodedToken = await admin.auth().verifyIdToken(googleToken);
+        const {uid: _id, email} = decodedToken;
+        const token = jwt.sign({_id, email}, process.env.JWT_SECRET);
+        return res.status(200).send({token});
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({error: "Failed signing in with Google"});
+    }
+}
+
 module.exports = {
     getUsers,
     register,
     login,
-    getUserInfo
+    getUserInfo,
+    googleSignIn
 }
