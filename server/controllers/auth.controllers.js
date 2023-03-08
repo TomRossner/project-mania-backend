@@ -1,13 +1,9 @@
 const {User} = require("../models");
 const {validateRegistrationInputs, validateLoginInputs} = require("../validations/auth.validations");
 const jwt = require('jsonwebtoken');
-const admin = require('firebase-admin');
-const serviceAccount = require("../../projectmania-e73ae-firebase-adminsdk-hcn09-4c2d89f6b3.json");
-const {generateObjectId, hash, generatePassword, comparePasswords} = require("../utils/utils");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+const {generateObjectId, generatePassword} = require("../utils/generators.utils");
+const {hash, comparePasswords} = require("../utils/bcrypt.utils");
+const { decodeToken } = require("../utils/firebase.utils");
 
 async function getUsers(req, res) {
     try {
@@ -34,7 +30,7 @@ async function signUp(req, res) {
             password: await hash(newUser.password)
         }).save();
         
-        res.status(200).send(user);
+        return res.status(200).send(user);
     } catch (error) {
         res.status(400).send({error: "Registration failed"});
     }
@@ -76,7 +72,7 @@ async function getUserInfo(req, res) {
 async function googleSignIn(req, res) {
     try {
         const {googleToken} = req.body;
-        const decodedToken = await admin.auth().verifyIdToken(googleToken);
+        const decodedToken = await decodeToken(googleToken);
         const {email} = decodedToken;
 
         const isUserRegistered = await User.findOne({email: email});
