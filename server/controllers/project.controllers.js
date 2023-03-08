@@ -5,8 +5,7 @@ async function getProjects(req, res) {
         const {id} = req.params;
         const projects = await Board.find({});
         const userProjects = projects.filter(project => project.members.find(member => member._id === id));
-        if (!userProjects.length) return res.status(404).send({error: "No projects found"});
-        res.status(200).send(userProjects);
+        return res.status(200).send(userProjects);
     } catch (error) {
         res.status(400).send({error: "Failed to get projects"});
     }
@@ -16,7 +15,7 @@ async function addProject(req, res) {
     try {
         const newProject = req.body;
         const project = await new Board(newProject).save();
-        res.status(200).send(project);
+        return res.status(200).send(project);
     } catch (error) {
         res.status(400).send({error: "Failed to add project"});
     }
@@ -25,7 +24,7 @@ async function addProject(req, res) {
 async function updateProject(req, res) {
     try {
         const updatedProject = await Board.findOneAndUpdate({_id: req.params.id}, req.body);
-        res.status(200).send(updatedProject);
+        return res.status(200).send(updatedProject);
     } catch (error) {
         res.status(400).send({error: "Update failed"});
     }
@@ -39,7 +38,7 @@ async function getTask(req, res) {
             return stage.stage_tasks.find(task => task._id.toString() === task_id.toString());
         })
         if (!stageContainingTask || stageContainingTask === undefined) {
-            res.status(404).send({error: "Task not found"});
+            return res.status(404).send({error: "Task not found"});
         } else return res.status(200).send(stageContainingTask[0].stage_tasks.filter(task => task._id.toString() === task_id));
     } catch (error) {
         res.status(400).send({error: "Task not found"});
@@ -53,7 +52,7 @@ async function deleteTask(req, res) {
             {_id: projectID, 'stages._id': stage_id},
             {$pull: {'stages.$.stage_tasks': {_id: task_id}}}
         );
-        res.status(200).send("Successfully deleted task");
+        return res.status(200).send("Successfully deleted task");
     } catch (error) {
         res.status(400).send({error: "Failed deleting task"});
     }
