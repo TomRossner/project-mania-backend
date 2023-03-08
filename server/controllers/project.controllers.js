@@ -58,10 +58,21 @@ async function deleteTask(req, res) {
     }
 }
 
+async function deleteProject(req, res) {
+    try {
+        const {_id} = req.params;
+        await Board.findByIdAndDelete(_id);
+        return res.status(200).send("Successfully deleted project");
+    } catch (error) {
+        res.status(400).send({error: "Failed deleting project"});
+    }
+}
+
 module.exports = {
     getProjects,
     addProject,
     updateProject,
     getTask,
-    deleteTask
+    deleteTask,
+    deleteProject
 }
