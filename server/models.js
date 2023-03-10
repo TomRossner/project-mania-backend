@@ -56,7 +56,8 @@ const boardSchema = new mongoose.Schema({
     subtitle: {type: String},
     edit_active: {type: Boolean, default: false},
     options_menu_open: {type: Boolean, default: false},
-    notifications: {type: Array}
+    notifications: {type: Array},
+    admins: {type: Array}
 }, {collection: 'boards'})
 const Board = mongoose.model("Board", boardSchema);
 
