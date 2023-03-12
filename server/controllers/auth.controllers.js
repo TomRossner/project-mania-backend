@@ -25,12 +25,12 @@ async function signUp(req, res) {
             return res.status(400).send({error: "User already registered"});
         }
 
-        const user = await new User({
+        await new User({
             ...newUser,
             password: await hash(newUser.password)
         }).save();
         
-        return res.status(200).send(user);
+        return res.status(201).send("Successfully registered user");
     } catch (error) {
         res.status(400).send({error: "Registration failed"});
     }
@@ -101,8 +101,9 @@ async function googleSignUp(req, res) {
 
         const newUser = {_id, first_name, last_name, email, password};
 
-        const user = await new User(newUser).save();
-        return res.status(200).send(user);
+        await new User(newUser).save();
+        
+        return res.status(201).send("Successfully registered Google user");
     } catch (error) {
         console.log(error);
         res.status(400).send({error: "Failed signing up with Google"});
