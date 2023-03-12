@@ -14,8 +14,8 @@ async function getProjects(req, res) {
 async function addProject(req, res) {
     try {
         const newProject = req.body;
-        const project = await new Board(newProject).save();
-        return res.status(200).send(project);
+        await new Board(newProject).save();
+        return res.status(201).send("Successfully created board");
     } catch (error) {
         res.status(400).send({error: "Failed to add project"});
     }
