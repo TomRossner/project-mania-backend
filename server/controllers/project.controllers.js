@@ -1,4 +1,5 @@
 const {Board} = require("../models");
+const { hash } = require("../utils/bcrypt.utils");
 
 async function getProjects(req, res) {
     try {
@@ -23,7 +24,10 @@ async function addProject(req, res) {
 
 async function updateProject(req, res) {
     try {
-        const updatedProject = await Board.findOneAndUpdate({_id: req.params.id}, req.body);
+        const updatedProject = await Board.findOneAndUpdate(
+            {_id: req.params.id},
+            {...req.body, admin_pass: hash(req.body.admin_pass)}
+        );
         return res.status(200).send(updatedProject);
     } catch (error) {
         res.status(400).send({error: "Update failed"});
