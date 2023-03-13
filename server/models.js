@@ -57,7 +57,8 @@ const boardSchema = new mongoose.Schema({
     edit_active: {type: Boolean, default: false},
     options_menu_open: {type: Boolean, default: false},
     notifications: {type: Array},
-    admins: {type: Array}
+    admins: {type: Array},
+    admin_pass: {type: String}
 }, {collection: 'boards'})
 const Board = mongoose.model("Board", boardSchema);
 
@@ -71,7 +72,7 @@ const userSchema = new mongoose.Schema({
     created_at: {type: Date, default: new Date()},
     last_login: {type: Date, default: Date.now},
     notifications: {type: Array},
-    is_admin: {type: Boolean, default: false}
+    admin: {type: Boolean, default: false}
 }, {collection: 'users'})
 
 userSchema.methods.generateAuthToken = function() {
