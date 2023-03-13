@@ -26,7 +26,7 @@ async function updateProject(req, res) {
     try {
         const updatedProject = await Board.findOneAndUpdate(
             {_id: req.params.id},
-            {...req.body, admin_pass: hash(req.body.admin_pass)}
+            {...req.body, admin_pass: await hash(req.body.admin_pass)}
         );
         return res.status(200).send(updatedProject);
     } catch (error) {
