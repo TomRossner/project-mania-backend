@@ -20,7 +20,8 @@ const boardProperties = {
     due_date: new Date().toDateString(),
     title: "New Board",
     subtitle: "",
-    admins: []
+    admins: [],
+    admin_pass: ""
 }
 
 const defaultTaskProperties = {
