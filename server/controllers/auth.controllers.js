@@ -59,7 +59,7 @@ async function signIn(req, res) {
 async function getUserInfo(req, res) {
     try {
         const {id} = req.params;
-        const user = await User.findById(id).select({password: 0, __v: 0});
+        const user = await User.findOne({_id: id}).select({password: 0, __v: 0});
         
         if (!user) return res.status(400).send({error: "User not found"});
 
@@ -78,8 +78,8 @@ async function googleSignIn(req, res) {
         const isUserRegistered = await User.findOne({email: email});
         if (!isUserRegistered) return res.status(400).send({error: "User not registered"});
 
-        const {_id} = await User.findOne({email:email}).select({_id: 1});
-        const token = jwt.sign({_id, email}, process.env.JWT_SECRET);
+        const {_id, admin} = await User.findOne({email:email}).select({_id: 1, admin: 1});
+        const token = jwt.sign({_id, email, admin}, process.env.JWT_SECRET);
         return res.status(200).send({token});
     } catch (error) {
         console.log(error);

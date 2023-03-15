@@ -30,6 +30,7 @@ async function updateProject(req, res) {
         );
         return res.status(200).send(updatedProject);
     } catch (error) {
+        console.log(error)
         res.status(400).send({error: "Update failed"});
     }
 }

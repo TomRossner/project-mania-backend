@@ -2,7 +2,7 @@
 const mongoose = require("mongoose");
 const {defaultStages} = require("./defaultProperties");
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
+require('dotenv').config();
 
 const messageSchema = new mongoose.Schema({
     text: {type: String},
@@ -72,12 +72,12 @@ const userSchema = new mongoose.Schema({
     created_at: {type: Date, default: new Date()},
     last_login: {type: Date, default: Date.now},
     notifications: {type: Array},
-    admin: {type: Boolean, default: false}
+    admin: {type: Boolean, default: false},
+    is_online: {type: Boolean, default: false}
 }, {collection: 'users'})
 
 userSchema.methods.generateAuthToken = function() {
-    const token = jwt.sign({_id: this._id, email: this.email}, process.env.JWT_SECRET);
-    console.log(token)
+    const token = jwt.sign({_id: this._id, email: this.email, admin: this.admin}, process.env.JWT_SECRET);
     return token;
 }
 

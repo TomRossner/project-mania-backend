@@ -1,13 +1,14 @@
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 5000;
-const dotenv = require("dotenv");
-dotenv.config();
 const cors = require("cors");
+const morgan = require("morgan");
+const mongoose = require("mongoose");
+const os = require("os");
+const cluster = require("cluster");
+require("dotenv").config();
 const AuthRouter = require("./routes/auth.routes");
 const ProjectRouter = require("./routes/project.routes");
-const mongoose = require("mongoose");
-const morgan = require("morgan");
 
 mongoose.set("strictQuery", false);
 
@@ -24,17 +25,26 @@ app.use(`/projectmania/projects`, ProjectRouter);
 
 
 async function connectDB() {
-  return new Promise((resolve, reject) => {
-    mongoose
+  return mongoose
     .connect(process.env.MONGO_URL)
-    .then(() => resolve(console.log("Connected to database")))
-    .catch(() => reject(console.log("Failed to connect to database")));
-  })
+    .then(() => console.log("✔ Connected to database"))
+    .catch(() => console.log("Failed connecting to database"));
 }
 
 async function startServer() {
-  await connectDB();
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}...`));
+  if (cluster.isMaster) {
+    const NUM_WORKERS = os.cpus().length;
+    
+    for (let i = 0; i < NUM_WORKERS; i++) {
+      cluster.fork();
+    }
+    
+    console.log(`Master process started, forking ${NUM_WORKERS} worker processes...`);
+  } else {
+    console.log("Worker process started");
+    await connectDB();
+    app.listen(PORT, () => console.log(`⚡ Server running on port ${PORT}`));
+  }
 } 
 
 startServer();
