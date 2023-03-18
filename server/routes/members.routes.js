@@ -3,6 +3,6 @@ const MembersRouter = express.Router();
 const {getAllUsers, getUserByEmail} = require('../controllers/members.controllers');
 
 MembersRouter.post('/:email', getUserByEmail);
-MembersRouter.get("/users", getAllUsers);
+MembersRouter.get("/all", getAllUsers);
 
 module.exports = MembersRouter;
