@@ -5,15 +5,6 @@ const {generateObjectId, generatePassword} = require("../utils/generators.utils"
 const {hash, comparePasswords} = require("../utils/bcrypt.utils");
 const { decodeToken } = require("../utils/firebase.utils");
 
-async function getUsers(req, res) {
-    try {
-        const users = await User.find({});
-        res.status(200).send(users);
-    } catch (error) {
-        res.status(400).send({error: "Failed getting users"});
-    }
-}
-
 async function signUp(req, res) {
     try {
         const newUser = req.body; 
@@ -111,7 +102,6 @@ async function googleSignUp(req, res) {
 }
 
 module.exports = {
-    getUsers,
     signUp,
     signIn,
     getUserInfo,

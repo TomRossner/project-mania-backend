@@ -9,6 +9,7 @@ const cluster = require("cluster");
 require("dotenv").config();
 const AuthRouter = require("./routes/auth.routes");
 const ProjectRouter = require("./routes/project.routes");
+const MembersRouter = require("./routes/members.routes");
 
 mongoose.set("strictQuery", false);
 
@@ -19,6 +20,7 @@ app.use(morgan('dev'));
 
 app.use(`/projectmania/auth`, AuthRouter);
 app.use(`/projectmania/projects`, ProjectRouter);
+app.use('/projectmania/members', MembersRouter);
 
 
 

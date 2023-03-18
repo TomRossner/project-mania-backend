@@ -3,7 +3,6 @@ const AuthRouter = express.Router();
 const {getUsers, signUp, signIn, getUserInfo, googleSignIn, googleSignUp} = require("../controllers/auth.controllers");
 const AUTH_MW = require("../middlewares/auth.middleware");
 
-AuthRouter.get("/users", getUsers);
 AuthRouter.post("/sign-up", signUp);
 AuthRouter.post("/sign-up/google", googleSignUp);
 AuthRouter.post("/sign-in", signIn);
