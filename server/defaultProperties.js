@@ -21,7 +21,8 @@ const boardProperties = {
     title: "New Board",
     subtitle: "",
     admins: [],
-    admin_pass: ""
+    admin_pass: "",
+    notifications: []
 }
 
 const defaultTaskProperties = {
