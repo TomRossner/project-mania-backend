@@ -73,7 +73,8 @@ const userSchema = new mongoose.Schema({
     last_login: {type: Date, default: Date.now},
     notifications: {type: Array},
     admin: {type: Boolean, default: false},
-    is_online: {type: Boolean, default: false}
+    is_online: {type: Boolean, default: false},
+    imageUrl: {type: String}
 }, {collection: 'users'})
 
 userSchema.methods.generateAuthToken = function() {
