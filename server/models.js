@@ -74,7 +74,7 @@ const userSchema = new mongoose.Schema({
     notifications: {type: Array},
     admin: {type: Boolean, default: false},
     online: {type: Boolean, default: false},
-    imageUrl: {type: String}
+    imgUrl: {type: String}
 }, {collection: 'users'})
 
 userSchema.methods.generateAuthToken = function() {

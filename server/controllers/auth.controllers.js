@@ -87,7 +87,8 @@ async function googleSignIn(req, res) {
 
 async function googleSignUp(req, res) {
     try {
-        const {displayName, email} = req.body;
+        const {displayName, email, imgUrl} = req.body;
+        console.log(req.body.imgUrl)
 
         const isUserAlreadyRegistered = await User.findOne({email: email});
         if (isUserAlreadyRegistered) return res.status(400).send({error: "User already registered"});
@@ -97,7 +98,7 @@ async function googleSignUp(req, res) {
         const first_name = displayName.split(" ")[0];
         const last_name = displayName.split(" ")[1];
 
-        const newUser = {_id, first_name, last_name, email, password};
+        const newUser = {_id, first_name, last_name, email, password, imgUrl};
 
         await new User(newUser).save();
         
