@@ -1,3 +1,4 @@
+const { allow } = require("joi");
 const Joi = require("joi");
 
 function validateRegistrationInputs(user) {
@@ -6,7 +7,8 @@ function validateRegistrationInputs(user) {
         last_name: Joi.string().min(2).max(255).required(),
         email: Joi.string().min(6).max(255).email().required(),
         password: Joi.string().min(6).max(1024).required(),
-        is_admin: Joi.bool()
+        admin: Joi.bool(),
+        imgUrl: Joi.string()
     });
 
     return schema.validate(user);

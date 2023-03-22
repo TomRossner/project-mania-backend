@@ -7,7 +7,7 @@ const { decodeToken } = require("../utils/firebase.utils");
 
 async function signUp(req, res) {
     try {
-        const newUser = req.body; 
+        const newUser = req.body;
         const {error} = validateRegistrationInputs(newUser);
         if (error) return res.status(400).send({error: error.details[0].message});
 
