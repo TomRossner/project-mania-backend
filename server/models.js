@@ -69,11 +69,11 @@ const userSchema = new mongoose.Schema({
     last_name: {type: String, required: true},
     email: {type: String, unique: true, required: true},
     password: {type: String, required: true},
-    created_at: {type: Date, default: new Date()},
+    created_at: {type: Date, default: Date.now},
     last_login: {type: Date, default: Date.now},
     notifications: {type: Array},
     admin: {type: Boolean, default: false},
-    is_online: {type: Boolean, default: false},
+    online: {type: Boolean, default: false},
     imageUrl: {type: String}
 }, {collection: 'users'})
 

@@ -36,9 +36,13 @@ async function signIn(req, res) {
         const user = await User.findOne({email: email});
         if (!user) return res.status(404).send({error: "User not found"});
 
+        
         const isMatchingPassword = await comparePasswords(password, user.password);
-
+        
         if (!isMatchingPassword) return res.status(400).send({error: "Incorrect email or password"});
+        
+        // Set 'online' property to true
+        await new User.updateOne({email:email}, {$set: {online: true}});
         
         const token = user.generateAuthToken();
         return res.status(200).send({token});
@@ -50,7 +54,7 @@ async function signIn(req, res) {
 async function getUserInfo(req, res) {
     try {
         const {id} = req.params;
-        const user = await User.findOne({_id: id}).select({password: 0, __v: 0});
+        const user = await User.findOne({_id: id}).select({password: 0, __v: 0, _id: 0});
         
         if (!user) return res.status(400).send({error: "User not found"});
 
@@ -68,6 +72,9 @@ async function googleSignIn(req, res) {
 
         const isUserRegistered = await User.findOne({email: email});
         if (!isUserRegistered) return res.status(400).send({error: "User not registered"});
+
+        // Set 'online' property to true
+        await new User.updateOne({email:email}, {$set: {online: true}});
 
         const {_id, admin} = await User.findOne({email:email}).select({_id: 1, admin: 1});
         const token = jwt.sign({_id, email, admin}, process.env.JWT_SECRET);
