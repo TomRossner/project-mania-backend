@@ -5,7 +5,7 @@ async function getProjects(req, res) {
     try {
         const {id} = req.params;
         const projects = await Board.find({});
-        const userProjects = projects.filter(project => project.members.find(member => member._id === id));
+        const userProjects = projects.filter(project => project.members.find(member => member._id.toString() === id.toString()));
         return res.status(200).send(userProjects);
     } catch (error) {
         res.status(400).send({error: "Failed to get projects"});

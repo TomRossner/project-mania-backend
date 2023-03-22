@@ -42,7 +42,7 @@ async function signIn(req, res) {
         if (!isMatchingPassword) return res.status(400).send({error: "Incorrect email or password"});
         
         // Set 'online' property to true
-        await new User.updateOne({email:email}, {$set: {online: true}});
+        await User.updateOne({email:email}, {$set: {online: true}});
         
         const token = user.generateAuthToken();
         return res.status(200).send({token});
@@ -74,7 +74,7 @@ async function googleSignIn(req, res) {
         if (!isUserRegistered) return res.status(400).send({error: "User not registered"});
 
         // Set 'online' property to true
-        await new User.updateOne({email:email}, {$set: {online: true}});
+        await User.updateOne({email:email}, {$set: {online: true}});
 
         const {_id, admin} = await User.findOne({email:email}).select({_id: 1, admin: 1});
         const token = jwt.sign({_id, email, admin}, process.env.JWT_SECRET);
