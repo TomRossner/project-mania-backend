@@ -74,7 +74,8 @@ const userSchema = new mongoose.Schema({
     notifications: {type: Array},
     admin: {type: Boolean, default: false},
     online: {type: Boolean, default: false},
-    imgUrl: {type: String}
+    profileImage: {type: mongoose.Schema.Types.ObjectId, ref: 'Image'},
+    header: {type: String, default: ""}
 }, {collection: 'users'})
 
 userSchema.methods.generateAuthToken = function() {
@@ -86,11 +87,22 @@ const User = mongoose.model("User", userSchema);
 
 
 
+const imageSchema = new mongoose.Schema({
+    name: {type: String},
+    data: {type: Buffer},
+    contentType: {type: String}
+},{collection: 'images'})
+
+const Image = mongoose.model('Image', imageSchema);
+
+
+
 
 module.exports = {
     User,
     Board,
     Stage,
     Task,
-    Message
+    Message,
+    Image
 }

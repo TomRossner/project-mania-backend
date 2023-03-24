@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken');
 const {generateObjectId, generatePassword} = require("../utils/generators.utils");
 const {hash, comparePasswords} = require("../utils/bcrypt.utils");
 const { decodeToken } = require("../utils/firebase.utils");
+const multer = require('multer');
+
+const upload = multer({dest: 'uploads/'});
 
 async function signUp(req, res) {
     try {
@@ -88,7 +91,6 @@ async function googleSignIn(req, res) {
 async function googleSignUp(req, res) {
     try {
         const {displayName, email, imgUrl} = req.body;
-        console.log(req.body.imgUrl)
 
         const isUserAlreadyRegistered = await User.findOne({email: email});
         if (isUserAlreadyRegistered) return res.status(400).send({error: "User already registered"});
@@ -109,10 +111,38 @@ async function googleSignUp(req, res) {
     }
 }
 
+async function updateUser(req, res) {
+    try {
+        console.log(req.body);
+        const {user} = req.body;
+
+        const updatedUser = await User.findOneAndUpdate({email: user.email}, user);
+        console.log(updatedUser)
+        return res.status(200).send(updatedUser);
+    } catch (error) {
+        res.status(400).send({error: "Failed updating user"});
+    }
+}
+
+async function updateProfilePicture(req, res) {
+    try {
+        console.log(req.body)
+        const {email} = req.body;
+        const {imgData} = req.file
+        console.log(imgData)
+        const user = await User.findOne({email: email});
+        res.send("ok")
+    } catch (error) {
+        res.status(400).send({error: "Failed updating profile picture"});
+    }
+}
+
 module.exports = {
     signUp,
     signIn,
     getUserInfo,
     googleSignIn,
-    googleSignUp
+    googleSignUp,
+    updateUser,
+    updateProfilePicture
 }
