@@ -7,7 +7,8 @@ function validateRegistrationInputs(user) {
         email: Joi.string().min(6).max(255).email().required(),
         password: Joi.string().min(6).max(1024).required(),
         admin: Joi.bool(),
-        imgUrl: Joi.string(),
+        base64_img_data: Joi.string(),
+        img_url: Joi.string(),
         header: Joi.string()
     });
 

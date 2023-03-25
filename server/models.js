@@ -74,7 +74,8 @@ const userSchema = new mongoose.Schema({
     notifications: {type: Array},
     admin: {type: Boolean, default: false},
     online: {type: Boolean, default: false},
-    profileImage: {type: mongoose.Schema.Types.ObjectId, ref: 'Image'},
+    base64_img_data: {type: String, default: ""},
+    img_url: {type: String, default: ""},
     header: {type: String, default: ""}
 }, {collection: 'users'})
 
