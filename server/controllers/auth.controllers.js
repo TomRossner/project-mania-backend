@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const {generateObjectId, generatePassword} = require("../utils/generators.utils");
 const {hash, comparePasswords} = require("../utils/bcrypt.utils");
 const { decodeToken } = require("../utils/firebase.utils");
+const { compress } = require("../utils/sharp.utils");
 
 async function signUp(req, res) {
     try {
@@ -122,8 +123,9 @@ async function updateUser(req, res) {
 async function updateProfilePicture(req, res) {
     try {
         const {email, imgData} = req.body;
+        const compressedImage = await compress(imgData);
         await User.updateOne({email: email}, {
-            $set: {base64_img_data: imgData}
+            $set: {base64_img_data: compressedImage}
         });
         return res.status(200).send("Successfully updated profile image");
     } catch (error) {
