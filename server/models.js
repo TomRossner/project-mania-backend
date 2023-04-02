@@ -58,7 +58,8 @@ const boardSchema = new mongoose.Schema({
     options_menu_open: {type: Boolean, default: false},
     notifications: {type: Array},
     admins: {type: Array},
-    admin_pass: {type: String}
+    admin_pass: {type: String},
+    activity: {type: Array}
 }, {collection: 'boards'})
 const Board = mongoose.model("Board", boardSchema);
 

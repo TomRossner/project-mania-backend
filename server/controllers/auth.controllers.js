@@ -127,7 +127,7 @@ async function updateProfilePicture(req, res) {
         await User.updateOne({email: email}, {
             $set: {base64_img_data: compressedImage}
         });
-        return res.status(200).send("Successfully updated profile image");
+        return res.status(200).send(compressedImage);
     } catch (error) {
         res.status(400).send({error: "Failed updating profile picture"});
     }
