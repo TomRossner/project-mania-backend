@@ -19,7 +19,18 @@ async function getAllUsers(req, res) {
     }
 }
 
+async function sendMessage(req, res) {
+    try {
+        const {message, to} = req.body;
+        console.log(`Sending '${message}' to ${to}`);
+        res.status(200).send("Message received!");
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     getUserByEmail,
-    getAllUsers
+    getAllUsers,
+    sendMessage
 }
