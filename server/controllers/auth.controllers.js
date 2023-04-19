@@ -1,4 +1,4 @@
-const {User} = require("../models");
+const {User} = require("../models/user.model");
 const {validateRegistrationInputs, validateLoginInputs} = require("../validations/auth.validations");
 const jwt = require('jsonwebtoken');
 const {generateObjectId, generatePassword} = require("../utils/generators.utils");
@@ -6,13 +6,16 @@ const {hash, comparePasswords} = require("../utils/bcrypt.utils");
 const { decodeToken } = require("../utils/firebase.utils");
 const { compress } = require("../utils/sharp.utils");
 
+// Sign-up
 async function signUp(req, res) {
     try {
         const newUser = req.body;
+
         const {error} = validateRegistrationInputs(newUser);
         if (error) return res.status(400).send({error: error.details[0].message});
 
         const isUserAlreadyRegistered = await User.findOne({ email: req.body.email });
+        
         if (isUserAlreadyRegistered) {
             return res.status(400).send({error: "User already registered"});
         }
@@ -25,9 +28,11 @@ async function signUp(req, res) {
         return res.status(201).send("Successfully registered user");
     } catch (error) {
         res.status(400).send({error: "Registration failed"});
+        throw new Error(error);
     }
 }
 
+// Sign-in
 async function signIn(req, res) {
     try {
         const {email, password} = req.body;
@@ -49,9 +54,11 @@ async function signIn(req, res) {
         return res.status(200).send({token});
     } catch (error) {
         res.status(400).send({error: "Login failed"});
+        throw new Error(error);
     }
 }
 
+// Get user details
 async function getUserInfo(req, res) {
     try {
         const {id} = req.params;
@@ -62,9 +69,11 @@ async function getUserInfo(req, res) {
         return res.status(200).send(user);
     } catch (error) {
         res.status(400).send({error: "Failed getting user"});
+        throw new Error(error);
     }
 }
 
+// Google sign-in
 async function googleSignIn(req, res) {
     try {
         const {googleToken} = req.body;
@@ -81,11 +90,12 @@ async function googleSignIn(req, res) {
         const token = jwt.sign({_id, email, admin}, process.env.JWT_SECRET);
         return res.status(200).send({token});
     } catch (error) {
-        console.log(error);
         res.status(400).send({error: "Failed signing in with Google"});
+        throw new Error(error);
     }
 }
 
+// Google sign-up
 async function googleSignUp(req, res) {
     try {
         const {displayName, email, imgUrl} = req.body;
@@ -94,7 +104,10 @@ async function googleSignUp(req, res) {
         if (isUserAlreadyRegistered) return res.status(400).send({error: "User already registered"});
 
         const _id = generateObjectId(req.body.uid);
-        const password = generatePassword(); // Generate random password;
+
+        // Hash randomly-generated password
+        const password = await hash(generatePassword());
+
         const first_name = displayName.split(" ")[0];
         const last_name = displayName.split(" ")[1];
 
@@ -104,35 +117,42 @@ async function googleSignUp(req, res) {
         
         return res.status(201).send("Successfully registered Google user");
     } catch (error) {
-        console.log(error);
         res.status(400).send({error: "Failed signing up with Google"});
+        throw new Error(error);
     }
 }
 
+// Update user
 async function updateUser(req, res) {
     try {
-        const {user} = req.body;
+        const updatedUser = await User.findOneAndUpdate({email: req.body.email}, req.body);
 
-        const updatedUser = await User.findOneAndUpdate({email: user.email}, user);
         return res.status(200).send(updatedUser);
     } catch (error) {
         res.status(400).send({error: "Failed updating user"});
+        throw new Error(error);
     }
 }
 
+// Update user's profile picture
 async function updateProfilePicture(req, res) {
     try {
         const {email, imgData} = req.body;
+
         const compressedImage = await compress(imgData);
+
         await User.updateOne({email: email}, {
             $set: {base64_img_data: compressedImage}
         });
+
         return res.status(200).send(compressedImage);
     } catch (error) {
         res.status(400).send({error: "Failed updating profile picture"});
+        throw new Error(error);
     }
 }
 
+// Exports
 module.exports = {
     signUp,
     signIn,

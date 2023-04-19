@@ -1,5 +1,6 @@
 const Joi = require("joi");
 
+// Validate new user inputs
 function validateRegistrationInputs(user) {
     const schema = Joi.object({
         first_name: Joi.string().min(2).max(255).required(),
@@ -15,6 +16,7 @@ function validateRegistrationInputs(user) {
     return schema.validate(user);
 }
 
+// Validate user credentials
 function validateLoginInputs(user) {
     const schema = Joi.object({
         email: Joi.string().min(6).max(255).email().required(),
@@ -24,6 +26,7 @@ function validateLoginInputs(user) {
     return schema.validate(user); 
 }
 
+// Exports
 module.exports = {
     validateRegistrationInputs,
     validateLoginInputs

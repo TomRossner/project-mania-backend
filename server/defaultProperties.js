@@ -1,3 +1,9 @@
+/*************************
+    DEFAULT PROPERTIES
+**************************/
+
+
+// Default stage properties
 const defaultStageProperties = {
     stage_name: "New Stage",
     description: "",
@@ -7,13 +13,15 @@ const defaultStageProperties = {
     options_menu_open: false,
     tasks_done: 0
 }
-  
+
+// Default stages
 const defaultStages = [
     {...defaultStageProperties, stage_name: 'Stage #1'},
     {...defaultStageProperties, stage_name: 'Stage #2'},
     {...defaultStageProperties, stage_name: 'Stage #3'}
 ]
-  
+
+// Default board properties
 const boardProperties = {
     stages: [...defaultStages],
     members: [],
@@ -25,6 +33,7 @@ const boardProperties = {
     notifications: []
 }
 
+// Default task properties
 const defaultTaskProperties = {
     created_at: new Date(),
     current_stage: {
@@ -49,6 +58,7 @@ const defaultTaskProperties = {
     labels: []
 }
 
+// Exports
 module.exports = {
     defaultStages,
     defaultStageProperties,

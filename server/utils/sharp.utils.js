@@ -1,6 +1,9 @@
 const sharp = require("sharp");
 
+// Compresses PNG/JPEG images
 async function compress(imgDataURL) {
+
+    // Handle PNG compression
     if (imgDataURL.includes('data:image/png')) {
 
         const imgData = imgDataURL.split(';base64,')[1];
@@ -15,6 +18,8 @@ async function compress(imgDataURL) {
         const compressedPNG_DataURL = `data:image/png;base64,${compressedPNG.toString('base64')}`;
 
         return compressedPNG_DataURL;
+
+    // Handle JPEG compression
     } else if (imgDataURL.includes('data:image/jpeg')) {
 
         const imgData = imgDataURL.split(';base64,')[1];
@@ -29,9 +34,12 @@ async function compress(imgDataURL) {
         const compressedJPEG_DataURL = `data:image/jpeg;base64,${compressedJPEG.toString('base64')}`;
 
         return compressedJPEG_DataURL;
+        
+    // Throw error if the image is not of type JPEG or PNG
     } else throw new Error("Could not compress image");
 }
 
+// Exports
 module.exports = {
     compress
 }

@@ -1,5 +1,6 @@
-const {User} = require('../models');
+const {User} = require('../models/user.model');
 
+// Get user by email
 async function getUserByEmail(req, res) {
     try {
         const {email} = req.body;
@@ -7,28 +8,33 @@ async function getUserByEmail(req, res) {
         return res.status(200).send(user);
     } catch (error) {
         res.status(400).send({error: "Failed getting user"});
+        throw new Error(error);
     }
 }
 
+// Get all users
 async function getAllUsers(req, res) {
     try {
         const users = await User.find({});
         return res.status(200).send(users);
     } catch (error) {
         res.status(400).send({error: "Failed getting users"});
+        throw new Error(error);
     }
 }
 
+// Send message
 async function sendMessage(req, res) {
     try {
         const {message, to} = req.body;
         console.log(`Sending '${message}' to ${to}`);
         res.status(200).send("Message received!");
     } catch (error) {
-        console.log(error);
+        throw new Error(error);
     }
 }
 
+// Exports
 module.exports = {
     getUserByEmail,
     getAllUsers,
