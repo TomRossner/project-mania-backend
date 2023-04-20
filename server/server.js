@@ -1,6 +1,12 @@
 const express = require("express");
 const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const socketServer = new Server(server);
+const sockets = require('./sockets/socket');
 const PORT = process.env.PORT || 5000;
+
 const cors = require("cors");
 const helmet = require('helmet');
 const morgan = require("morgan");
@@ -8,9 +14,6 @@ const mongoose = require("mongoose");
 const os = require("os");
 const cluster = require("cluster");
 require("dotenv").config();
-const server = require('http').createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
 
 // Routers
 const AuthRouter = require("./routes/auth.routes");
@@ -30,15 +33,6 @@ app.use(`/projectmania/projects`, ProjectRouter);
 app.use('/projectmania/members', MembersRouter);
 
 mongoose.set("strictQuery", false);
-
-
-// Sockets
-io.on('connection', (socket) => {
-
-  socket.on('connection', (data) => {
-    console.log(`${data.userName} is connected`);
-  })
-})
 
 
 // Connect to MongoDB
@@ -63,6 +57,7 @@ async function startServer_Clusters() {
     console.log("Worker process started");
     await connectDB();
     server.listen(PORT, () => console.log(`⚡ Server running on port ${PORT}`));
+    sockets.listen(socketServer);
   }
 }
 
@@ -70,7 +65,13 @@ async function startServer_Clusters() {
 async function startServer() {
   await connectDB();
   server.listen(PORT, () => console.log(`⚡ Server running on port ${PORT}`));
+  sockets.listen(socketServer);
 } 
 
 // Init
 process.env.NODE_ENV === 'production' ? startServer_Clusters() : startServer();
+
+// Exports
+module.exports = {
+  app
+}
