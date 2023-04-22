@@ -19,6 +19,7 @@ require("dotenv").config();
 const AuthRouter = require("./routes/auth.routes");
 const ProjectRouter = require("./routes/project.routes");
 const MembersRouter = require("./routes/members.routes");
+const ChatsRouter = require("./routes/chats.routes");
 
 
 // Middle-wares
@@ -31,6 +32,7 @@ app.use(helmet());
 app.use(`/projectmania/auth`, AuthRouter);
 app.use(`/projectmania/projects`, ProjectRouter);
 app.use('/projectmania/members', MembersRouter);
+app.use('/projectmania/chats', ChatsRouter);
 
 mongoose.set("strictQuery", false);
 
