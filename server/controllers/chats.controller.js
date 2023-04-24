@@ -1,26 +1,27 @@
 const {Chat} = require('../models/chat.model');
 const {Message} = require('../models/message.model');
+const mongoose = require('mongoose');
 
+// Get chat which contains both user IDs
 async function getChat(req, res) {
     try {
         const {userId, contactId} = req.body;
 
-        const chat = await Chat.find(chat => chat.users.includes(userId && contactId));
-        console.log(chat);
+        const chat = await Chat.findOne({users: { $all: [userId, contactId] }});
         
         return res.status(200).send(chat);
     } catch (error) {
-        console.log(error);
         res.status(400).send({error: 'Could not find chat'});
         throw new Error(error);
     }
 }
 
+// Create new chat
 async function createChat(req, res) {
     try {
         const {userId, contactId} = req.body;
 
-        const chatAlreadyExists = await Chat.find(chat => chat.users.includes(userId && contactId));
+        const chatAlreadyExists = await Chat.findOne({users: { $all: [userId, contactId] }});
 
         if (chatAlreadyExists) return;
 
@@ -35,12 +36,12 @@ async function createChat(req, res) {
 
         return res.status(200).send(chat);
     } catch (error) {
-        console.log(error);
         res.status(400).send({error: 'Could not create chat'});
         throw new Error(error);
     }
 }
 
+// Delete chat
 async function deleteChat(req, res) {
     try {
         const {chatId} = req.body;
@@ -49,42 +50,44 @@ async function deleteChat(req, res) {
 
         return res.status(200).send('Successfully deleted chat');
     } catch (error) {
-        console.log(error);
         res.status(400).send({error: 'Could not delete chat'});
         throw new Error(error);
     }
 }
 
+// Create new message
 async function createMessage(values) {
-    const {message, from, to} = values;
+    const {text, from, to} = values;
 
     const newMessage = await new Message({
         from,
         to,
-        text: message
+        text
     }).save();
 
     return newMessage;
 }
 
-async function addMessage(req, res) {
+// Add new message to chat
+async function addMessage(data) {
     try {
-        const {chatId, message, from, to} = req.body;
+        const {chatId, text, from, to} = data;
+        console.log(chatId);
+        const newMessage = await createMessage({from, to, text});
 
-        const newMessage = await createMessage({from, to, message});
-
-        const chat = await Chat.findByIdAndUpdate(
+        // const findChat = await Chat.findOne({_id: chatId});
+        const chat = await Chat.findOneAndUpdate(
             {_id: chatId},
-            {$set: {messages: [...this.messages, newMessage]}}
+            {$push: {messages: newMessage}},
+            {new: true}
         );
 
         console.log(chat);
 
-        return res.status(200).send('Successfully added new message');
+        // return res.status(200).send('Successfully added new message');
         
     } catch (error) {
-        console.log(error);
-        res.status(400).send({error: 'Could not add message'});
+        // res.status(400).send({error: 'Could not add message'});
         throw new Error(error);
     }
 }

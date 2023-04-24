@@ -3,8 +3,20 @@ const {User} = require('../models/user.model');
 // Get user by email
 async function getUserByEmail(req, res) {
     try {
-        const {email} = req.body;
-        const user = await User.findOne({email: email});
+        const {email} = req.params;
+        const user = await User.findOne({email: email}).select({password: 0, __v: 0});
+        return res.status(200).send(user);
+    } catch (error) {
+        res.status(400).send({error: "Failed getting user"});
+        throw new Error(error);
+    }
+}
+
+// Get user by ID
+async function getUserById(req, res) {
+    try {
+        const {id} = req.params;
+        const user = await User.findOne({_id: id}).select({password: 0, __v: 0});
         return res.status(200).send(user);
     } catch (error) {
         res.status(400).send({error: "Failed getting user"});
@@ -38,5 +50,6 @@ async function sendMessage(req, res) {
 module.exports = {
     getUserByEmail,
     getAllUsers,
-    sendMessage
+    sendMessage,
+    getUserById
 }
