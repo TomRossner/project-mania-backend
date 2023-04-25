@@ -46,10 +46,23 @@ async function sendMessage(req, res) {
     }
 }
 
+// Update user socket ID
+async function updateSocketId(userId, socketId) {
+    try {
+        return await User.updateOne(
+            {_id: userId},
+            {$set: {socket_id: socketId.toString()}}
+        );
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
 // Exports
 module.exports = {
     getUserByEmail,
     getAllUsers,
     sendMessage,
-    getUserById
+    getUserById,
+    updateSocketId
 }

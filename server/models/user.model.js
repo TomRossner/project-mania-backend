@@ -15,7 +15,8 @@ const userSchema = new mongoose.Schema({
     online: {type: Boolean, default: false},
     base64_img_data: {type: String, default: ""},
     img_url: {type: String, default: ""},
-    header: {type: String, default: ""}
+    header: {type: String, default: ""},
+    socket_id: {type: String, default: ""}
 }, {collection: 'users'})
 
 // Generate Auth token
