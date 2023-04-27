@@ -5,16 +5,17 @@ const {generateObjectId, generatePassword} = require("../utils/generators.utils"
 const {hash, comparePasswords} = require("../utils/bcrypt.utils");
 const { decodeToken } = require("../utils/firebase.utils");
 const { compress } = require("../utils/sharp.utils");
-const { checkUserData } = require("../utils/regex");
+const { checkUserData, checkPattern, PATTERN_TYPES } = require("../utils/regex");
+const ERROR_MESSAGES = require("../utils/errors");
 
 // Sign-up
 async function signUp(req, res) {
     try {
         const {newUser} = req.body;
         
-        // Check user inputs
+        // Check user data
         if (!checkUserData(newUser)) {
-            return res.status(400).send({error: 'Failed to register. Invalid inputs'});
+            return res.status(400).send({error: ERROR_MESSAGES.REGISTRATION_FAILED_INVALID_INPUTS});
         }
 
         const {error} = validateRegistrationInputs(newUser);
@@ -24,7 +25,7 @@ async function signUp(req, res) {
         const isUserAlreadyRegistered = await User.findOne({ email: req.body.email });
         
         if (isUserAlreadyRegistered) {
-            return res.status(400).send({error: "User already registered"});
+            return res.status(400).send({error: ERROR_MESSAGES.USER_ALREADY_REGISTERED});
         }
 
         // Register user
@@ -35,7 +36,7 @@ async function signUp(req, res) {
         
         return res.status(201).send("Successfully registered user");
     } catch (error) {
-        res.status(400).send({error: "Registration failed"});
+        res.status(400).send({error: ERROR_MESSAGES.REGISTRATION_FAILED});
         throw new Error(error);
     }
 }
@@ -51,12 +52,12 @@ async function signIn(req, res) {
 
         // Check if user exists in DB
         const user = await User.findOne({email: email});
-        if (!user) return res.status(404).send({error: "User not found"});
+        if (!user) return res.status(404).send({error: ERROR_MESSAGES.USER_NOT_FOUND});
 
         // Check if password matches the correct password
         const isMatchingPassword = await comparePasswords(password, user.password);
         
-        if (!isMatchingPassword) return res.status(400).send({error: "Incorrect email or password"});
+        if (!isMatchingPassword) return res.status(400).send({error: ERROR_MESSAGES.INCORRECT_EMAIL_OR_PASSWORD});
         
         // Set 'online' property to true
         await User.updateOne({email:email}, {$set: {online: true}});
@@ -66,7 +67,7 @@ async function signIn(req, res) {
 
         return res.status(200).send({token});
     } catch (error) {
-        res.status(400).send({error: "Login failed"});
+        res.status(400).send({error: ERROR_MESSAGES.LOGIN_FAILED});
         throw new Error(error);
     }
 }
@@ -78,11 +79,11 @@ async function getUserInfo(req, res) {
 
         // Find user
         const user = await User.findOne({_id: id}).select({password: 0, __v: 0});
-        if (!user) return res.status(400).send({error: "User not found"});
+        if (!user) return res.status(400).send({error: ERROR_MESSAGES.USER_NOT_FOUND});
 
         return res.status(200).send(user);
     } catch (error) {
-        res.status(400).send({error: "Failed getting user"});
+        res.status(400).send({error: ERROR_MESSAGES.GET_USER_FAILED});
         throw new Error(error);
     }
 }
@@ -100,7 +101,7 @@ async function googleSignIn(req, res) {
 
         // Check if user is already registered
         const isUserRegistered = await User.findOne({email: email});
-        if (!isUserRegistered) return res.status(400).send({error: "User not registered"});
+        if (!isUserRegistered) return res.status(400).send({error: ERROR_MESSAGES.USER_NOT_REGISTERED});
 
         // Set 'online' property to true
         await User.updateOne({email:email}, {$set: {online: true}});
@@ -113,7 +114,7 @@ async function googleSignIn(req, res) {
 
         return res.status(200).send({token});
     } catch (error) {
-        res.status(400).send({error: "Failed signing in with Google"});
+        res.status(400).send({error: ERROR_MESSAGES.GOOGLE_SIGN_IN_FAILED});
         throw new Error(error);
     }
 }
@@ -125,7 +126,7 @@ async function googleSignUp(req, res) {
 
         // Check if user is already registered
         const isUserAlreadyRegistered = await User.findOne({email: email});
-        if (isUserAlreadyRegistered) return res.status(400).send({error: "User already registered"});
+        if (isUserAlreadyRegistered) return res.status(400).send({error: ERROR_MESSAGES.USER_ALREADY_REGISTERED});
 
         // Generate ObjectId from uid
         const _id = generateObjectId(uid);
@@ -143,7 +144,7 @@ async function googleSignUp(req, res) {
         
         return res.status(201).send("Successfully registered Google user");
     } catch (error) {
-        res.status(400).send({error: "Failed signing up with Google"});
+        res.status(400).send({error: ERROR_MESSAGES.GOOGLE_SIGN_UP_FAILED});
         throw new Error(error);
     }
 }
@@ -155,7 +156,7 @@ async function updateUser(req, res) {
 
         return res.status(200).send(updatedUser);
     } catch (error) {
-        res.status(400).send({error: "Failed updating user"});
+        res.status(400).send({error: ERROR_MESSAGES.UPDATE_USER_FAILED});
         throw new Error(error);
     }
 }
@@ -175,7 +176,53 @@ async function updateProfilePicture(req, res) {
 
         return res.status(200).send(compressedImage);
     } catch (error) {
-        res.status(400).send({error: "Failed updating profile picture"});
+        res.status(400).send({error: ERROR_MESSAGES.UPDATE_PROFILE_PICTURE_FAILED});
+        throw new Error(error);
+    }
+}
+
+// Check password
+async function checkPassword(req, res) {
+    try {
+        const {id, pw} = req.body;
+
+        // Find password
+        const {password} = await User.findOne({_id: id}).select({password: 1, _id: 0});
+
+        // Compare passwords
+        const passwordsAreMatching = await comparePasswords(pw, password);
+
+        if (!passwordsAreMatching) {
+            return res.status(400).send({error: ERROR_MESSAGES.WRONG_PASSWORD});
+        }
+
+        return res.status(200).send('Ok');
+    } catch (error) {
+        res.status(400).send({error: ERROR_MESSAGES.CHECK_PASSWORD_FAILED});
+        throw new Error(error);
+    }
+}
+
+// Update password
+async function updatePassword(req,res) {
+    try {
+        const {id, newPW} = req.body;
+
+        // Check newPW regex pattern
+        if (!checkPattern(PATTERN_TYPES.PASSWORD, newPW)) {
+            return res.status(400).send({error: ERROR_MESSAGES.INVALID_PASSWORD_FORMAT});
+        }
+
+        // Update password
+        await User.updateOne(
+            {_id: id},
+            {$set: {password: await hash(newPW)}},
+            {new: true}
+        );
+
+        return res.status(200).send('Successfully updated password');
+    } catch (error) {
+        res.status(400).send({error: ERROR_MESSAGES.UPDATE_PASSWORD_FAILED});
         throw new Error(error);
     }
 }
@@ -188,5 +235,7 @@ module.exports = {
     googleSignIn,
     googleSignUp,
     updateUser,
-    updateProfilePicture
+    updateProfilePicture,
+    checkPassword,
+    updatePassword
 }

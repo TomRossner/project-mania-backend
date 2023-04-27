@@ -1,5 +1,6 @@
 const {Board} = require("../models/board.model");
 const { hash } = require("../utils/bcrypt.utils");
+const ERROR_MESSAGES = require("../utils/errors");
 const { validateBoard } = require("../validations/projects.validations");
 
 // Get all user's projects
@@ -10,7 +11,7 @@ async function getProjects(req, res) {
         const userProjects = projects.filter(project => project.members.find(member => member._id.toString() === id.toString()));
         return res.status(200).send(userProjects);
     } catch (error) {
-        res.status(400).send({error: "Failed to get projects"});
+        res.status(400).send({error: ERROR_MESSAGES.GET_USER_PROJECTS_FAILED});
         throw new Error(error);
     }
 }
@@ -23,14 +24,14 @@ async function addProject(req, res) {
         const {error} = validateBoard({title: newProject.title});
         
         if (error) {
-            return res.status(400).send({error: "Could not create board"});
+            return res.status(400).send({error: ERROR_MESSAGES.CREATE_BOARD_FAILED});
         }
 
         const project = await new Board(newProject).save();
 
         return res.status(201).send(project);
     } catch (error) {
-        res.status(400).send({error: "Failed to add project"});
+        res.status(400).send({error: ERROR_MESSAGES.ADD_NEW_PROJECT_FAILED});
         throw new Error(error);
     }
 }
@@ -45,7 +46,7 @@ async function updateProject(req, res) {
         return res.status(200).send(updatedProject);
     } catch (error) {
         console.log(error)
-        res.status(400).send({error: "Update failed"});
+        res.status(400).send({error: ERROR_MESSAGES.UPDATE_PROJECT_FAILED});
         throw new Error(error);
     }
 }
@@ -59,10 +60,10 @@ async function getTask(req, res) {
             return stage.stage_tasks.find(task => task._id.toString() === task_id.toString());
         })
         if (!stageContainingTask || stageContainingTask === undefined) {
-            return res.status(404).send({error: "Task not found"});
+            return res.status(404).send({error: ERROR_MESSAGES.TASK_NOT_FOUND});
         } else return res.status(200).send(stageContainingTask[0].stage_tasks.filter(task => task._id.toString() === task_id));
     } catch (error) {
-        res.status(400).send({error: "Task not found"});
+        res.status(400).send({error: ERROR_MESSAGES.TASK_NOT_FOUND});
         throw new Error(error);
     }
 }
@@ -77,7 +78,7 @@ async function deleteTask(req, res) {
         );
         return res.status(200).send("Successfully deleted task");
     } catch (error) {
-        res.status(400).send({error: "Failed deleting task"});
+        res.status(400).send({error: ERROR_MESSAGES.DELETE_TASK_FAILED});
         throw new Error(error);
     }
 }
@@ -89,7 +90,7 @@ async function deleteProject(req, res) {
         await Board.findByIdAndDelete(id);
         return res.status(200).send("Successfully deleted project");
     } catch (error) {
-        res.status(400).send({error: "Failed deleting project"});
+        res.status(400).send({error: ERROR_MESSAGES.DELETE_PROJECT_FAILED});
         throw new Error(error);
     }
 }

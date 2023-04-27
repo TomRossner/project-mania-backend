@@ -1,5 +1,6 @@
 const {Chat} = require('../models/chat.model');
 const {Message} = require('../models/message.model');
+const ERROR_MESSAGES = require('../utils/errors');
 
 // Get chat which contains both user IDs
 async function getChat(req, res) {
@@ -10,7 +11,7 @@ async function getChat(req, res) {
         
         return res.status(200).send(chat);
     } catch (error) {
-        res.status(400).send({error: 'Could not find chat'});
+        res.status(400).send({error: ERROR_MESSAGES.FIND_CHAT_FAILED});
         throw new Error(error);
     }
 }
@@ -35,7 +36,7 @@ async function createChat(req, res) {
 
         return res.status(200).send(chat);
     } catch (error) {
-        res.status(400).send({error: 'Could not create chat'});
+        res.status(400).send({error: ERROR_MESSAGES.CREATE_CHAT_FAILED});
         throw new Error(error);
     }
 }
@@ -49,7 +50,7 @@ async function deleteChat(req, res) {
 
         return res.status(200).send('Successfully deleted chat');
     } catch (error) {
-        res.status(400).send({error: 'Could not delete chat'});
+        res.status(400).send({error: ERROR_MESSAGES.DELETE_CHAT_FAILED});
         throw new Error(error);
     }
 }

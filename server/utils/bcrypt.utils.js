@@ -1,11 +1,14 @@
 const bcrypt = require("bcrypt");
 
-// Salt
-const SALT = 10;
 
 // Hash password
 async function hash(password) {
+    // Salt
+    const SALT = 10;
+
+    // Hash password
     const hashedPW = await bcrypt.hash(password, SALT);
+
     return hashedPW;
 }
 

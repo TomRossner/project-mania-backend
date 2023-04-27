@@ -1,4 +1,5 @@
 const {User} = require('../models/user.model');
+const ERROR_MESSAGES = require('../utils/errors');
 
 // Get user by email
 async function getUserByEmail(req, res) {
@@ -7,7 +8,7 @@ async function getUserByEmail(req, res) {
         const user = await User.findOne({email: email}).select({password: 0, __v: 0});
         return res.status(200).send(user);
     } catch (error) {
-        res.status(400).send({error: "Failed getting user"});
+        res.status(400).send({error: ERROR_MESSAGES.GET_USER_FAILED});
         throw new Error(error);
     }
 }
@@ -19,7 +20,7 @@ async function getUserById(req, res) {
         const user = await User.findOne({_id: id}).select({password: 0, __v: 0});
         return res.status(200).send(user);
     } catch (error) {
-        res.status(400).send({error: "Failed getting user"});
+        res.status(400).send({error: ERROR_MESSAGES.GET_USER_FAILED});
         throw new Error(error);
     }
 }
@@ -30,7 +31,7 @@ async function getAllUsers(req, res) {
         const users = await User.find({});
         return res.status(200).send(users);
     } catch (error) {
-        res.status(400).send({error: "Failed getting users"});
+        res.status(400).send({error: ERROR_MESSAGES.GET_ALL_USERS_FAILED});
         throw new Error(error);
     }
 }

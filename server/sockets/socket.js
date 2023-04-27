@@ -1,6 +1,5 @@
 // Sockets
 
-const {User} = require('../models/user.model');
 const { addMessage } = require("../controllers/chats.controller");
 const { updateSocketId } = require('../controllers/members.controllers');
 

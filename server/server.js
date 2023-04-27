@@ -20,6 +20,7 @@ const AuthRouter = require("./routes/auth.routes");
 const ProjectRouter = require("./routes/project.routes");
 const MembersRouter = require("./routes/members.routes");
 const ChatsRouter = require("./routes/chats.routes");
+const ERROR_MESSAGES = require("./utils/errors");
 
 
 // Middle-wares
@@ -42,7 +43,7 @@ async function connectDB() {
   return mongoose
     .connect(process.env.MONGO_URL)
     .then(() => console.log("✔ Connected to database"))
-    .catch((error) => console.log("Failed connecting to database", error));
+    .catch((error) => console.log(ERROR_MESSAGES.CONNECT_TO_DB_FAILED, error));
 }
 
 // Start the server using the Cluster module
