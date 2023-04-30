@@ -8,7 +8,6 @@ const {
     googleSignUp,
     updateUser,
     updateProfilePicture,
-    getUserPW,
     checkPassword,
     updatePassword
 } = require("../controllers/auth.controllers");

@@ -6,8 +6,8 @@ const ERROR_MESSAGES = require('../utils/errors');
 async function getChat(req, res) {
     try {
         const {userId, contactId} = req.body;
-
-        const chat = await Chat.findOne({users: { $all: [userId, contactId] }});
+        
+        const chat = await Chat.findOne({users: { $all: [userId, contactId]}}).select({__v: 0});
         
         return res.status(200).send(chat);
     } catch (error) {
@@ -80,7 +80,8 @@ async function addMessage(data) {
             {$push: {messages: newMessage}},
             {new: true}
         );
-        
+        console.log('Chat: ', chat)
+        return;
     } catch (error) {
         throw new Error(error);
     }
