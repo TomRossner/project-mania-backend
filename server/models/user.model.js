@@ -9,14 +9,15 @@ const userSchema = new mongoose.Schema({
     email: {type: String, unique: true, required: true},
     password: {type: String, required: true},
     created_at: {type: Date, default: Date.now},
-    last_login: {type: Date, default: Date.now},
+    last_seen: {type: Date, default: Date.now},
     notifications: {type: Array},
     admin: {type: Boolean, default: false},
     online: {type: Boolean, default: false},
     base64_img_data: {type: String, default: ""},
     img_url: {type: String, default: ""},
     header: {type: String, default: ""},
-    socket_id: {type: String, default: ""}
+    socket_id: {type: String, default: ""},
+    favorites: {type: [String]}
 }, {collection: 'users'})
 
 // Generate Auth token

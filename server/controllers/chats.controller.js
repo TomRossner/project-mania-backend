@@ -16,6 +16,20 @@ async function getChat(req, res) {
     }
 }
 
+// Get user chats
+async function getUserChats(req, res) {
+    try {
+        const {userId} = req.body;
+
+        const chats = await Chat.find({users: {$all: [userId]}});
+
+        return res.status(200).send(chats);
+    } catch (error) {
+        res.status(400).send({error: ERROR_MESSAGES.GET_USER_CHATS_FAILED})
+        throw new Error(error);
+    }
+}
+
 // Create new chat
 async function createChat(req, res) {
     try {
@@ -80,7 +94,7 @@ async function addMessage(data) {
             {$push: {messages: newMessage}},
             {new: true}
         );
-        console.log('Chat: ', chat)
+
         return;
     } catch (error) {
         throw new Error(error);
@@ -93,5 +107,6 @@ module.exports = {
     createChat,
     deleteChat,
     addMessage,
-    createMessage
+    createMessage,
+    getUserChats
 }

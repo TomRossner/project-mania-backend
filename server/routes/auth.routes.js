@@ -9,7 +9,8 @@ const {
     updateUser,
     updateProfilePicture,
     checkPassword,
-    updatePassword
+    updatePassword,
+    updateLastSeen
 } = require("../controllers/auth.controllers");
 const AUTH_MW = require("../middlewares/auth.middleware");
 
@@ -22,6 +23,7 @@ AuthRouter.put("/update", AUTH_MW, updateUser); // Update user
 AuthRouter.post("/check-pw", AUTH_MW, checkPassword); // Check password
 AuthRouter.post("/update-pw", AUTH_MW, updatePassword); // Update password
 AuthRouter.post("/update-profile-picture", AUTH_MW, updateProfilePicture); // Update profile picture
+AuthRouter.post("/update-logout-time", updateLastSeen); // Update logout time
 
 // Export router
 module.exports = AuthRouter;

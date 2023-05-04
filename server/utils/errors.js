@@ -36,6 +36,7 @@ const ERROR_MESSAGES = {
     FIND_CHAT_FAILED: 'Could not find chat',
     CREATE_CHAT_FAILED: 'Could not create chat',
     DELETE_CHAT_FAILED: 'Could not delete chat',
+    GET_USER_CHATS_FAILED: 'Failed getting user chats',
     
     // Members errors
     GET_ALL_USERS_FAILED: 'Failed getting users',

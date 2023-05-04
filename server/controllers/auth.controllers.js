@@ -153,7 +153,7 @@ async function googleSignUp(req, res) {
 async function updateUser(req, res) {
     try {
         const updatedUser = await User.findOneAndUpdate({email: req.body.email}, req.body);
-
+        
         return res.status(200).send(updatedUser);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.UPDATE_USER_FAILED});
@@ -227,6 +227,19 @@ async function updatePassword(req,res) {
     }
 }
 
+// Update logout time
+async function updateLastSeen(req, res) {
+    const date = new Date();
+    try {
+        const {userId} = req.body;
+        const user = await User.updateOne({_id: userId}, {$set: {last_seen: date}});
+        return res.status(200).send('Successfully updated last_seen property');
+    } catch (error) {
+        res.status(400).send({error: 'Failed to update last_seen property'});
+        throw new Error(error);
+    }
+}
+
 // Exports
 module.exports = {
     signUp,
@@ -237,5 +250,6 @@ module.exports = {
     updateUser,
     updateProfilePicture,
     checkPassword,
-    updatePassword
+    updatePassword,
+    updateLastSeen
 }
