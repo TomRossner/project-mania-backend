@@ -25,7 +25,7 @@ const ERROR_MESSAGES = require("./utils/errors");
 
 // Middle-wares
 app.use(express.json({limit: '5mb'}));
-app.use(express.urlencoded({extended: true, limit: '2mb'}));
+app.use(express.urlencoded({extended: true, limit: '5mb'}));
 app.use(morgan('dev'));
 app.use(cors());
 app.use(helmet());
@@ -73,8 +73,3 @@ async function startServer() {
 
 // Init
 process.env.NODE_ENV === 'production' ? startServer_Clusters() : startServer();
-
-// Exports
-module.exports = {
-  app
-}
