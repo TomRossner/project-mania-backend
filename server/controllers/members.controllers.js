@@ -41,7 +41,7 @@ async function updateOnlineStatus(socketId, boolean) {
 // Get user by Socket ID
 async function getUserBySocketId(socketId) {
     try {
-        const user = await User.findOne({socket_id: socketId});
+        const user = await User.findOne({socket_id: socketId}).select({password: 0, __v: 0});
         return user;
     } catch (error) {
         throw new Error(error);
@@ -51,7 +51,7 @@ async function getUserBySocketId(socketId) {
 // Get all users
 async function getAllUsers(req, res) {
     try {
-        const users = await User.find({});
+        const users = await User.find({}).select({password: 0, __v: 0});
         return res.status(200).send(users);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.GET_ALL_USERS_FAILED});
