@@ -7,7 +7,7 @@ const { validateBoard } = require("../validations/projects.validations");
 async function getProjects(req, res) {
     try {
         const {id} = req.params;
-        const projects = await Board.find({});
+        const projects = await Board.find({}).select({__v: 0, admin_pass: 0});
         const userProjects = projects.filter(project => project.members.find(member => member._id.toString() === id.toString()));
         return res.status(200).send(userProjects);
     } catch (error) {
@@ -45,7 +45,6 @@ async function updateProject(req, res) {
         );
         return res.status(200).send(updatedProject);
     } catch (error) {
-        console.log(error)
         res.status(400).send({error: ERROR_MESSAGES.UPDATE_PROJECT_FAILED});
         throw new Error(error);
     }
