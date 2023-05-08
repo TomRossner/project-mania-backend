@@ -25,6 +25,29 @@ async function getUserById(req, res) {
     }
 }
 
+// Get user's online status
+async function updateOnlineStatus(socketId, boolean) {
+    try {
+        return await User.updateOne(
+            {socket_id: socketId},
+            {$set: {online: boolean}},
+            {new: true}
+        );
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+// Get user by Socket ID
+async function getUserBySocketId(socketId) {
+    try {
+        const user = await User.findOne({socket_id: socketId});
+        return user;
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
 // Get all users
 async function getAllUsers(req, res) {
     try {
@@ -32,17 +55,6 @@ async function getAllUsers(req, res) {
         return res.status(200).send(users);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.GET_ALL_USERS_FAILED});
-        throw new Error(error);
-    }
-}
-
-// Send message
-async function sendMessage(req, res) {
-    try {
-        const {message, to} = req.body;
-        console.log(`Sending '${message}' to ${to}`);
-        res.status(200).send("Message received!");
-    } catch (error) {
         throw new Error(error);
     }
 }
@@ -63,7 +75,8 @@ async function updateSocketId(userId, socketId) {
 module.exports = {
     getUserByEmail,
     getAllUsers,
-    sendMessage,
     getUserById,
-    updateSocketId
+    updateSocketId,
+    updateOnlineStatus,
+    getUserBySocketId
 }

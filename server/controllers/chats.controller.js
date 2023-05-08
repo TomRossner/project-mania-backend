@@ -89,13 +89,11 @@ async function addMessage(data) {
 
         const newMessage = await createMessage({from, to, text});
 
-        const chat = await Chat.findOneAndUpdate(
+        return await Chat.findOneAndUpdate(
             {_id: chatId},
             {$push: {messages: newMessage}},
             {new: true}
         );
-
-        return;
     } catch (error) {
         throw new Error(error);
     }

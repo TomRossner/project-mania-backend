@@ -1,16 +1,22 @@
 // SOCKETS EVENTS
 
-// const { connect, newMessage, typing, notTyping, createChat, online, offline, disconnect } = require("./callbacks.socket");
-
 const { addMessage } = require("../controllers/chats.controller");
-const { updateSocketId } = require('../controllers/members.controllers');
+const { updateSocketId, updateOnlineStatus, getUserBySocketId } = require('../controllers/members.controllers');
 
 function listen(io) {
     io.on('connection', (socket) => {
     
         socket.on('connection', async (data) => {
-            console.log(`${data.userName} is connected. User socket ID: ${socket.id}`);
+            console.log(`🔌 ${data.userName} is connected. User socket ID: ${socket.id}`);
+
+            // Update socket id
             await updateSocketId(data.userId, socket.id);
+
+            // Update online status
+            await updateOnlineStatus(socket.id, true);
+
+            // Broadcast online 
+            socket.broadcast.emit('online', data);
         });
 
         socket.on('newMessage', async (data) => {
@@ -30,29 +36,31 @@ function listen(io) {
             socket.to(data.targetSocketId).emit('createChat', {userId: data.userId, newChat: data.newChat});
         });
 
-        socket.on('online', (data) => {
-            socket.broadcast.emit('online', data);
+        socket.on('offline', async ({userName, userId}) => {
+            await updateOnlineStatus(socket.id, false);
+            socket.broadcast.emit('offline', {userName, userId});
+            console.log('❌ Disconnected: ', socket.id);
+            // socket.disconnect(); // Do I need this?
         });
 
-        socket.on('offline', (data) => {
-            socket.broadcast.emit('offline', {userName: data.userName, userId: data.userId});
+        socket.on('unload', async ({ userId }) => {
+            await updateOnlineStatus(userId, false);
         });
 
-        // socket.on('seen', async (data) => {
-        //     const message = await Message.updateOne(
-        //         {_id: data.messageId},
-        //         {$set: {seen: true}},
-        //         {new: true}
-        //     )
+        socket.on('disconnecting', async () => {
+            console.log('❌ Disconnected: ', socket.id);
+            
+            const user = await getUserBySocketId(socket.id);
 
-        //     socket.to(data.targetSocketId).emit('seen');
-        // })
+            if (user) {
+                // Broadcast offline
+                socket.broadcast.emit('offline', {userName: `${user?.first_name} ${user?.last_name}`, userId: user?._id});
+            }
 
-        socket.on('disconnect', (data) => {
-            console.log(`A user has disconnected`);
+            // Update online status
+            // await updateOnlineStatus(socket.id, false); // This causes online status bugs in admins list
         });
     })
-
 }
 
 // Exports

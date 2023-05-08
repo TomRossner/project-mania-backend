@@ -1,4 +1,5 @@
 const {User} = require("../models/user.model");
+const {Board} = require('../models/board.model');
 const {validateRegistrationInputs, validateLoginInputs} = require("../validations/auth.validations");
 const jwt = require('jsonwebtoken');
 const {generateObjectId, generatePassword} = require("../utils/generators.utils");
@@ -227,12 +228,35 @@ async function updatePassword(req,res) {
     }
 }
 
+// Check admin pass code
+async function checkAdminPass(req, res) {
+    try {
+        const {input, projectId} = req.body;
+
+        // Find and extract project's admin pass code
+        const {admin_pass} = await Board.findOne({_id: projectId}).select({_id: 0, admin_pass: 1});
+
+        // Check if input matches project's admin pass code
+        const isValid = await comparePasswords(input, admin_pass);
+
+        // If not valid, return error
+        if (!isValid) return res.status(400).send({error: 'Wrong pass code'});
+
+        return res.status(200).send('Valid pass code');
+    } catch (error) {
+        res.status(400).send({error: 'Failed checking pass code'});
+        throw new Error(error);
+    }
+}
+
 // Update logout time
 async function updateLastSeen(req, res) {
     const date = new Date();
     try {
         const {userId} = req.body;
-        const user = await User.updateOne({_id: userId}, {$set: {last_seen: date}});
+        
+        await User.updateOne({_id: userId}, {$set: {last_seen: date}});
+
         return res.status(200).send('Successfully updated last_seen property');
     } catch (error) {
         res.status(400).send({error: 'Failed to update last_seen property'});
@@ -251,5 +275,6 @@ module.exports = {
     updateProfilePicture,
     checkPassword,
     updatePassword,
-    updateLastSeen
+    updateLastSeen,
+    checkAdminPass
 }

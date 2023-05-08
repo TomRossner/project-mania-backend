@@ -42,7 +42,7 @@ mongoose.set("strictQuery", false);
 async function connectDB() {
   return mongoose
     .connect(process.env.MONGO_URL)
-    .then(() => console.log("✔ Connected to database"))
+    .then(() => console.log("✅ Connected to database"))
     .catch((error) => console.log(ERROR_MESSAGES.CONNECT_TO_DB_FAILED, error));
 }
 
