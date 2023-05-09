@@ -20,6 +20,7 @@ async function getProjects(req, res) {
 async function addProject(req, res) {
     try {
         const newProject = req.body;
+        const {admin_pass} = newProject;
 
         const {error} = validateBoard({title: newProject.title});
         
@@ -27,7 +28,10 @@ async function addProject(req, res) {
             return res.status(400).send({error: ERROR_MESSAGES.CREATE_BOARD_FAILED});
         }
 
-        const project = await new Board(newProject).save();
+        const project = await new Board({
+            ...newProject,
+            admin_pass: admin_pass ? await hash(admin_pass) : await hash(process.env.PROJECT_ADMIN_PASS)
+        }).save();
 
         return res.status(201).send(project);
     } catch (error) {
@@ -39,13 +43,33 @@ async function addProject(req, res) {
 // Update project
 async function updateProject(req, res) {
     try {
+        console.log(req.body.admin_pass);
         const updatedProject = await Board.findOneAndUpdate(
             {_id: req.params.id},
-            {...req.body, admin_pass: await hash(req.body.admin_pass)}
+            {...req.body}
         );
         return res.status(200).send(updatedProject);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.UPDATE_PROJECT_FAILED});
+        throw new Error(error);
+    }
+}
+
+async function updateAdminPass(req, res) {
+    try {
+        const {admin_pass, projectId} = req.body;
+
+        const update = await Board.updateOne(
+            {_id: projectId},
+            {$set: {admin_pass: admin_pass}},
+            {new: true}
+        );
+        // FIX FUNCTION ASAP - Don't have projectId when you first create it
+        console.log(update)
+
+        return res.status(200).send('Successfully updated admin pass code');
+    } catch (error) {
+        res.status(400).send({error: 'Failed updating admin pass code'});
         throw new Error(error);
     }
 }
@@ -101,5 +125,6 @@ module.exports = {
     updateProject,
     getTask,
     deleteTask,
-    deleteProject
+    deleteProject,
+    updateAdminPass
 }
