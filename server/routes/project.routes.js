@@ -6,7 +6,8 @@ const {
     updateProject,
     getTask,
     deleteTask,
-    deleteProject
+    deleteProject,
+    updateAdminPass
 } = require("../controllers/project.controllers");
 const AUTH_MW = require('../middlewares/auth.middleware');
 
@@ -16,6 +17,7 @@ ProjectRouter.put("/:id", AUTH_MW, updateProject); // Update project
 ProjectRouter.get("/:id/:task_id", AUTH_MW, getTask); // Get task
 ProjectRouter.delete("/:id/:stage_id/:task_id", AUTH_MW, deleteTask); // Delete task
 ProjectRouter.delete("/delete/:id", AUTH_MW, deleteProject); // Delete project
+ProjectRouter.put("/update-admin-pass", AUTH_MW, updateAdminPass); // Update admin pass code
 
 // Export router
 module.exports = ProjectRouter;

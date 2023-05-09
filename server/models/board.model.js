@@ -14,7 +14,7 @@ const boardSchema = new mongoose.Schema({
     options_menu_open: {type: Boolean, default: false},
     notifications: {type: Array},
     admins: {type: Array},
-    admin_pass: {type: String},
+    admin_pass: {type: String, default: process.env.PROJECT_ADMIN_PASS},
     activity: {type: Array}
 }, {collection: 'boards'})
 
