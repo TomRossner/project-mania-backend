@@ -22,8 +22,8 @@ AuthRouter.post("/sign-in/google", googleSignIn); // Google sign-in
 AuthRouter.get("/get/:id", AUTH_MW, getUserInfo); // Get user details
 AuthRouter.put("/update", AUTH_MW, updateUser); // Update user
 AuthRouter.post("/check-pw", AUTH_MW, checkPassword); // Check password
-AuthRouter.post("/update-pw", AUTH_MW, updatePassword); // Update password
-AuthRouter.post("/update-profile-picture", AUTH_MW, updateProfilePicture); // Update profile picture
+AuthRouter.put("/update-pw", AUTH_MW, updatePassword); // Update password
+AuthRouter.put("/update-profile-picture", AUTH_MW, updateProfilePicture); // Update profile picture
 AuthRouter.post("/update-logout-time", updateLastSeen); // Update logout time
 AuthRouter.post('/admin', AUTH_MW, checkAdminPass); // Check admin pass code
 

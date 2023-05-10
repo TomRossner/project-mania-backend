@@ -43,7 +43,6 @@ async function addProject(req, res) {
 // Update project
 async function updateProject(req, res) {
     try {
-        console.log(req.body.admin_pass);
         const updatedProject = await Board.findOneAndUpdate(
             {_id: req.params.id},
             {...req.body}
