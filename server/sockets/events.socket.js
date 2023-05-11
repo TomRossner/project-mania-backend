@@ -47,7 +47,7 @@ function listen(io) {
             await updateOnlineStatus(userId, false);
         });
 
-        socket.on('disconnecting', async () => {
+        socket.on('closeBrowser', async () => {
             console.log('❌ Disconnected: ', socket.id);
             
             const user = await getUserBySocketId(socket.id);
