@@ -14,13 +14,13 @@ const mongoose = require("mongoose");
 const os = require("os");
 const cluster = require("cluster");
 require("dotenv").config();
+const ERROR_MESSAGES = require("./utils/errors");
 
 // Routers
 const AuthRouter = require("./routes/auth.routes");
 const ProjectRouter = require("./routes/project.routes");
 const MembersRouter = require("./routes/members.routes");
 const ChatsRouter = require("./routes/chats.routes");
-const ERROR_MESSAGES = require("./utils/errors");
 
 
 // Middle-wares
