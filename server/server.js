@@ -9,10 +9,29 @@ const http = require('http');
 const http_Server = http.createServer(app);
 const http_socketServer = new Server(http_Server);
 
-// HTTPS server for production --- TO BE IMPLEMENTED
-// const https = require('https');
-// const https_Server = https.createServer(app);
-// const https_socketServer = new Server(https_Server);
+// HTTPS server
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
+
+// SSL certificate path
+const certPath = path.resolve(process.env.CERT_PATH);
+
+const certFilePath = path.join(certPath, 'fullchain.pem');
+const privateKeyPath = path.join(certPath, 'privkey.pem');
+
+
+// Load the SSL certificate and private key files
+const certificate = fs.readFileSync(certFilePath);
+const privateKey = fs.readFileSync(privateKeyPath);
+
+const options = {
+  key: privateKey,
+  cert: certificate,
+}
+
+const https_Server = https.createServer(options, app);
+const https_socketServer = new Server(https_Server);
 
 
 const cors = require("cors");
@@ -67,8 +86,8 @@ async function startServer_Clusters() {
   } else {
     console.log("Worker process started");
     await connectDB();
-    http_Server.listen(PORT, () => console.log(`⚡ Server running on port ${PORT}`));
-    sockets.listen(http_socketServer);
+    https_Server.listen(PORT, () => console.log(`⚡ Server running on port ${PORT}`));
+    sockets.listen(https_socketServer);
   }
 }
 
