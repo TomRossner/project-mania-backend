@@ -15,7 +15,7 @@ const fs = require('fs');
 const path = require('path');
 
 // SSL certificate path
-const certPath = path.resolve(process.env.CERT_PATH);
+const certPath = path.resolve(__dirname, process.env.CERT_PATH);
 
 const certFilePath = path.join(certPath, 'fullchain.pem');
 const privateKeyPath = path.join(certPath, 'privkey.pem');
