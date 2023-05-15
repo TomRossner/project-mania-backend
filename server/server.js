@@ -9,10 +9,10 @@ const http = require('http');
 const http_Server = http.createServer(app);
 const http_socketServer = new Server(http_Server);
 
-// HTTPS server for production
-const https = require('https');
-const https_Server = https.createServer(app);
-const https_socketServer = new Server(https_Server);
+// HTTPS server for production --- TO BE IMPLEMENTED
+// const https = require('https');
+// const https_Server = https.createServer(app);
+// const https_socketServer = new Server(https_Server);
 
 
 const cors = require("cors");
@@ -55,7 +55,7 @@ async function connectDB() {
 }
 
 // Start the server using the Cluster module
-async function startServer_https() {
+async function startServer_Clusters() {
   if (cluster.isMaster) {
     const NUM_WORKERS = os.cpus().length;
     
@@ -67,8 +67,8 @@ async function startServer_https() {
   } else {
     console.log("Worker process started");
     await connectDB();
-    https_Server.listen(PORT, () => console.log(`⚡ Server running on port ${PORT}`));
-    sockets.listen(https_socketServer);
+    http_Server.listen(PORT, () => console.log(`⚡ Server running on port ${PORT}`));
+    sockets.listen(http_socketServer);
   }
 }
 
@@ -80,4 +80,4 @@ async function startServer() {
 } 
 
 // Init
-process.env.NODE_ENV === 'production' ? startServer_https() : startServer();
+process.env.NODE_ENV === 'production' ? startServer_Clusters() : startServer();
