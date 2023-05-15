@@ -1,11 +1,19 @@
 const express = require("express");
 const app = express();
-const http = require('http');
-const server = http.createServer(app);
 const { Server } = require("socket.io");
-const socketServer = new Server(server);
 const sockets = require('./sockets/events.socket');
 const PORT = process.env.PORT || 5000;
+
+// HTTP server for development
+const http = require('http');
+const http_Server = http.createServer(app);
+const http_socketServer = new Server(http_Server);
+
+// HTTPS server for production
+const https = require('https');
+const https_Server = https.createServer(app);
+const https_socketServer = new Server(https_Server);
+
 
 const cors = require("cors");
 const helmet = require('helmet');
@@ -47,7 +55,7 @@ async function connectDB() {
 }
 
 // Start the server using the Cluster module
-async function startServer_Clusters() {
+async function startServer_https() {
   if (cluster.isMaster) {
     const NUM_WORKERS = os.cpus().length;
     
@@ -59,17 +67,17 @@ async function startServer_Clusters() {
   } else {
     console.log("Worker process started");
     await connectDB();
-    server.listen(PORT, () => console.log(`⚡ Server running on port ${PORT}`));
-    sockets.listen(socketServer);
+    https_Server.listen(PORT, () => console.log(`⚡ Server running on port ${PORT}`));
+    sockets.listen(https_socketServer);
   }
 }
 
 // Start the server
 async function startServer() {
   await connectDB();
-  server.listen(PORT, () => console.log(`⚡ Server running on port ${PORT}`));
-  sockets.listen(socketServer);
+  http_Server.listen(PORT, () => console.log(`⚡ Server running on port ${PORT}`));
+  sockets.listen(http_socketServer);
 } 
 
 // Init
-process.env.NODE_ENV === 'production' ? startServer_Clusters() : startServer();
+process.env.NODE_ENV === 'production' ? startServer_https() : startServer();
