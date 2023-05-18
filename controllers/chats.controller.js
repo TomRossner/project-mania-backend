@@ -12,7 +12,6 @@ async function getChat(req, res) {
         return res.status(200).send(chat);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.FIND_CHAT_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -26,7 +25,6 @@ async function getUserChats(req, res) {
         return res.status(200).send(chats);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.GET_USER_CHATS_FAILED})
-        throw new Error(error);
     }
 }
 
@@ -51,7 +49,6 @@ async function createChat(req, res) {
         return res.status(200).send(chat);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.CREATE_CHAT_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -65,7 +62,6 @@ async function deleteChat(req, res) {
         return res.status(200).send('Successfully deleted chat');
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.DELETE_CHAT_FAILED});
-        throw new Error(error);
     }
 }
 

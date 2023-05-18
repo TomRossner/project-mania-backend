@@ -27,7 +27,7 @@ function listen(io) {
         socket.on('typing', (data) => {
             socket.to(data.targetSocketId).emit('typing', {chatId: data.chatId});
         });
-
+        
         socket.on('notTyping', (data) => {
             socket.to(data.targetSocketId).emit('notTyping', {chatId: data.chatId});
         });
@@ -40,14 +40,9 @@ function listen(io) {
             await updateOnlineStatus(socket.id, false);
             socket.broadcast.emit('offline', {userName, userId});
             console.log('❌ Disconnected: ', socket.id);
-            // socket.disconnect(); // Do I need this?
         });
 
-        socket.on('unload', async ({ userId }) => {
-            await updateOnlineStatus(userId, false);
-        });
-
-        socket.on('closeBrowser', async () => {
+        socket.on('disconnect', async () => {
             console.log('❌ Disconnected: ', socket.id);
             
             const user = await getUserBySocketId(socket.id);
@@ -56,10 +51,7 @@ function listen(io) {
                 // Broadcast offline
                 socket.broadcast.emit('offline', {userName: `${user?.first_name} ${user?.last_name}`, userId: user?._id});
             }
-
-            // Update online status
-            // await updateOnlineStatus(socket.id, false); // This causes online status bugs in admins list
-        });
+        })
     })
 }
 

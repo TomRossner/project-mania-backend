@@ -38,7 +38,6 @@ async function signUp(req, res) {
         return res.status(201).send("Successfully registered user");
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.REGISTRATION_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -69,7 +68,6 @@ async function signIn(req, res) {
         return res.status(200).send({token});
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.LOGIN_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -85,7 +83,6 @@ async function getUserInfo(req, res) {
         return res.status(200).send(user);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.GET_USER_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -116,7 +113,6 @@ async function googleSignIn(req, res) {
         return res.status(200).send({token});
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.GOOGLE_SIGN_IN_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -146,7 +142,6 @@ async function googleSignUp(req, res) {
         return res.status(201).send("Successfully registered Google user");
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.GOOGLE_SIGN_UP_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -158,7 +153,6 @@ async function updateUser(req, res) {
         return res.status(200).send(updatedUser);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.UPDATE_USER_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -178,7 +172,6 @@ async function updateProfilePicture(req, res) {
         return res.status(200).send(compressedImage);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.UPDATE_PROFILE_PICTURE_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -200,7 +193,6 @@ async function checkPassword(req, res) {
         return res.status(200).send('Ok');
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.CHECK_PASSWORD_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -224,7 +216,6 @@ async function updatePassword(req,res) {
         return res.status(200).send('Successfully updated password');
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.UPDATE_PASSWORD_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -245,7 +236,6 @@ async function checkAdminPass(req, res) {
         return res.status(200).send('Valid pass code');
     } catch (error) {
         res.status(400).send({error: 'Failed checking pass code'});
-        throw new Error(error);
     }
 }
 
@@ -260,7 +250,6 @@ async function updateLastSeen(req, res) {
         return res.status(200).send('Successfully updated last_seen property');
     } catch (error) {
         res.status(400).send({error: 'Failed to update last_seen property'});
-        throw new Error(error);
     }
 }
 

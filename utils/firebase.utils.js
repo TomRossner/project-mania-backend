@@ -1,5 +1,5 @@
 const admin = require('firebase-admin');
-const serviceAccount = require("../../projectmania-e73ae-firebase-adminsdk-hcn09-4c2d89f6b3.json");
+const serviceAccount = require("../projectmania-e73ae-firebase-adminsdk-hcn09-4c2d89f6b3.json");
 
 // Initialize
 admin.initializeApp({

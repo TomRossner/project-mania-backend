@@ -12,7 +12,6 @@ async function getProjects(req, res) {
         return res.status(200).send(userProjects);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.GET_USER_PROJECTS_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -36,7 +35,6 @@ async function addProject(req, res) {
         return res.status(201).send(project);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.ADD_NEW_PROJECT_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -50,7 +48,6 @@ async function updateProject(req, res) {
         return res.status(200).send(updatedProject);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.UPDATE_PROJECT_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -69,7 +66,6 @@ async function updateAdminPass(req, res) {
         return res.status(200).send('Successfully updated admin pass code');
     } catch (error) {
         res.status(400).send({error: 'Failed updating admin pass code'});
-        throw new Error(error);
     }
 }
 
@@ -86,7 +82,6 @@ async function getTask(req, res) {
         } else return res.status(200).send(stageContainingTask[0].stage_tasks.filter(task => task._id.toString() === task_id));
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.TASK_NOT_FOUND});
-        throw new Error(error);
     }
 }
 
@@ -101,7 +96,6 @@ async function deleteTask(req, res) {
         return res.status(200).send("Successfully deleted task");
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.DELETE_TASK_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -113,7 +107,6 @@ async function deleteProject(req, res) {
         return res.status(200).send("Successfully deleted project");
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.DELETE_PROJECT_FAILED});
-        throw new Error(error);
     }
 }
 

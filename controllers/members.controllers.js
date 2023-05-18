@@ -9,7 +9,6 @@ async function getUserByEmail(req, res) {
         return res.status(200).send(user);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.GET_USER_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -21,7 +20,6 @@ async function getUserById(req, res) {
         return res.status(200).send(user);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.GET_USER_FAILED});
-        throw new Error(error);
     }
 }
 
@@ -55,7 +53,6 @@ async function getAllUsers(req, res) {
         return res.status(200).send(users);
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.GET_ALL_USERS_FAILED});
-        throw new Error(error);
     }
 }
 
