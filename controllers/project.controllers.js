@@ -29,7 +29,7 @@ async function addProject(req, res) {
 
         const project = await new Board({
             ...newProject,
-            admin_pass: admin_pass ? await hash(admin_pass) : await hash(process.env.PROJECT_ADMIN_PASS)
+            admin_pass: await hash(admin_pass ? admin_pass : process.env.PROJECT_ADMIN_PASS)
         }).save();
 
         return res.status(201).send(project);
@@ -55,13 +55,15 @@ async function updateAdminPass(req, res) {
     try {
         const {admin_pass, projectId} = req.body;
 
+        console.log(admin_pass);////////////////remove
+
         const update = await Board.updateOne(
             {_id: projectId},
-            {$set: {admin_pass: admin_pass}},
+            {$set: {admin_pass: await hash(admin_pass)}},
             {new: true}
         );
-        // FIX FUNCTION ASAP - Don't have projectId when you first create it
-        console.log(update)
+
+        console.log(update);//////////////////remove
 
         return res.status(200).send('Successfully updated admin pass code');
     } catch (error) {
@@ -73,10 +75,13 @@ async function updateAdminPass(req, res) {
 async function getTask(req, res) {
     try {
         const {id: projectID, task_id} = req.params;
+
         const project = await Board.findOne({_id: projectID});
+
         const stageContainingTask = project.stages.filter(stage => {
             return stage.stage_tasks.find(task => task._id.toString() === task_id.toString());
         })
+
         if (!stageContainingTask || stageContainingTask === undefined) {
             return res.status(404).send({error: ERROR_MESSAGES.TASK_NOT_FOUND});
         } else return res.status(200).send(stageContainingTask[0].stage_tasks.filter(task => task._id.toString() === task_id));
@@ -89,10 +94,12 @@ async function getTask(req, res) {
 async function deleteTask(req, res) {
     try {
         const {id: projectID, stage_id, task_id} = req.params;
+
         await Board.updateOne(
             {_id: projectID, 'stages._id': stage_id},
             {$pull: {'stages.$.stage_tasks': {_id: task_id}}}
         );
+
         return res.status(200).send("Successfully deleted task");
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.DELETE_TASK_FAILED});
@@ -103,7 +110,9 @@ async function deleteTask(req, res) {
 async function deleteProject(req, res) {
     try {
         const {id} = req.params;
+
         await Board.findByIdAndDelete(id);
+
         return res.status(200).send("Successfully deleted project");
     } catch (error) {
         res.status(400).send({error: ERROR_MESSAGES.DELETE_PROJECT_FAILED});

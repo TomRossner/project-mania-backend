@@ -15,8 +15,8 @@ function listen(io) {
             // Update online status
             await updateOnlineStatus(socket.id, true);
 
-            // Broadcast online 
-            socket.broadcast.emit('online', data);
+            // Broadcast online
+            socket.broadcast.emit('online', {...data, newSocketId: socket._id});
         });
 
         socket.on('newMessage', async (data) => {
@@ -25,11 +25,12 @@ function listen(io) {
         });
 
         socket.on('typing', (data) => {
-            socket.to(data.targetSocketId).emit('typing', {chatId: data.chatId});
+            socket.to(data.targetSocketId).emit('typing', {chatId: data.chatId, userId: data.userId});
         });
         
         socket.on('notTyping', (data) => {
-            socket.to(data.targetSocketId).emit('notTyping', {chatId: data.chatId});
+
+            socket.to(data.targetSocketId).emit('notTyping', {chatId: data.chatId, userId: data.userId});
         });
 
         socket.on('createChat', (data) => {
@@ -39,7 +40,7 @@ function listen(io) {
         socket.on('offline', async ({userName, userId}) => {
             await updateOnlineStatus(socket.id, false);
             socket.broadcast.emit('offline', {userName, userId});
-            console.log('❌ Disconnected: ', socket.id);
+            console.log('❌ Logged out: ', socket.id);
         });
 
         socket.on('disconnect', async () => {
