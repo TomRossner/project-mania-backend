@@ -23,14 +23,32 @@ async function getUserById(req, res) {
     }
 }
 
-// Get user's online status
+// Update user's online status and last-seen time
 async function updateOnlineStatus(socketId, boolean) {
     try {
-        return await User.updateOne(
-            {socket_id: socketId},
-            {$set: {online: boolean}},
-            {new: true}
-        );
+        // If true, update only 'online' property
+        if (boolean === true) {
+
+            return await User.updateOne(
+                {socket_id: socketId},
+                {$set: {online: boolean}},
+                {new: true}
+            );
+
+         // If false, update also 'last_seen' property 
+        } else if (boolean === false) {
+
+            const date = new Date();
+
+            return await User.updateOne(
+                {socket_id: socketId},
+                {$set: {
+                    online: boolean,
+                    last_seen: date
+                }},
+                {new: true}
+            );
+        }
     } catch (error) {
         throw new Error(error);
     }

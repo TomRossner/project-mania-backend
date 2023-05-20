@@ -8,6 +8,7 @@ const http = require('http');
 const http_Server = http.createServer(app);
 const http_socketServer = new Server(http_Server);
 
+// Modules
 const cors = require("cors");
 const helmet = require('helmet');
 const morgan = require("morgan");
@@ -24,7 +25,7 @@ const ProjectRouter = require("./routes/project.routes");
 const MembersRouter = require("./routes/members.routes");
 const ChatsRouter = require("./routes/chats.routes");
 
-// Middlewares
+// Middle-wares
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 app.use(morgan('dev'));
@@ -77,6 +78,7 @@ if (process.env.NODE_ENV !== 'production') {
   const https_Server = https.createServer(options, app);
   const https_socketServer = new Server(https_Server);
 
+  // Start HTTPS server with Cluster module
   async function startServer_Clusters() {
     if (cluster.isMaster) {
       const NUM_WORKERS = os.cpus().length;
